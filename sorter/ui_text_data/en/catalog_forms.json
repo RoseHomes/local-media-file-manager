@@ -1,0 +1,86 @@
+﻿{
+  "page_ui": {
+    "catalog_game_import_form": {
+      "fields": {
+        "root_folder": {
+          "placeholder": "workspace/library",
+          "error_messages": {
+            "required": "Enter a game library root path."
+          }
+        }
+      },
+      "messages": {
+        "blank_folder": "Folder path cannot be blank."
+      }
+    },
+    "catalog_game_manual_form": {
+      "fields": {
+        "manual_kind": {
+          "error_messages": {
+            "required": "Select an entry type."
+          }
+        },
+        "manual_title": {
+          "placeholder": "Game title",
+          "error_messages": {
+            "required": "Enter a display title."
+          }
+        },
+        "manual_folder_name": {
+          "placeholder": "Folder name (optional)"
+        },
+        "manual_parent_game": {
+          "empty_label": "Select root game",
+          "error_messages": {
+            "required": "Select a root game."
+          }
+        }
+      },
+      "choices": {
+        "manual_kind": {
+          "root": "Root game",
+          "subfolder": "Subfolder"
+        }
+      },
+      "messages": {
+        "blank_title": "Display title cannot be blank.",
+        "missing_parent": "Select a root game for this subfolder."
+      }
+    },
+    "catalog_character_import_form": {
+      "fields": {
+        "root_folder": {
+          "placeholder": "workspace/library/characters",
+          "error_messages": {
+            "required": "Enter a character import root path."
+          }
+        }
+      },
+      "messages": {
+        "blank_folder": "Folder path cannot be blank."
+      }
+    },
+    "catalog_character_manual_form": {
+      "fields": {
+        "manual_game": {
+          "empty_label": "Select root game",
+          "error_messages": {
+            "required": "Select a root game."
+          }
+        },
+        "manual_name": {
+          "placeholder": "Character name",
+          "error_messages": {
+            "required": "Enter a character name."
+          }
+        },
+        "manual_description": {
+          "placeholder": "Description (optional)"
+        }
+      },
+      "messages": {
+        "blank_name": "Character name cannot be blank."
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "page_ui": {
+    "filemanage_setting_page": {
+      "saved_values_intro": "Saved values on this page are loaded automatically by the matching FileManage operation.",
+      "save_settings": "Save Settings",
+      "reset": "Reset",
+      "workspace_snapshot_title": "Workspace Snapshot",
+      "workspace_snapshot_intro": "Quick reference for the current FileManage root.",
+      "root": "Root",
+      "folders": "Folders",
+      "files": "Files",
+      "images": "Images",
+      "current_values_title": "Current Values",
+      "current_values_intro": "Snapshot of the settings that are currently saved.",
+      "rename_helper_intro": "Pick a workflow first. Shared fields stay visible, and the form will show only the controls used by that workflow.",
+      "rename_cards": [
+        {"title": "Text Transform", "body": "Replace text, add prefixes or suffixes, remove matched text, or keep the per-folder alphabet mode."},
+        {"title": "Trim by Delimiter", "body": "Cut filenames around a delimiter like _, -, (, or [ and keep only the part you want."},
+        {"title": "Numbering", "body": "Swap number blocks or add a numbered prefix or suffix in sorted order."}
+      ],
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "empty": "-"
+    },
+    "filemanage_messages": {
+      "setting_saved": "{label} updated successfully.",
+      "dependency_missing_pdf_to_images": "This operation needs an extra dependency before it can run. Install pypdfium2 for PDF To Images.",
+      "dependency_missing_webp_to_mp4": "This operation needs an extra dependency before it can run. Install FFmpeg for WebP To MP4.",
+      "dependency_missing_generic": "This operation needs an extra dependency before it can run.",
+      "no_matching_items": "No matching items were found for this operation.",
+      "operation_completed": "{label} completed for {count} item(s)."
+    }
+  }
+}

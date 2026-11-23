@@ -1,0 +1,24 @@
+{
+  "pages": {
+    "fanart_file": {
+      "kicker": "Fanart Workflow",
+      "title": "Fanart File",
+      "intro": "Review incoming fanart, match each image to the right game and character, then queue everything for batch processing."
+    },
+    "fanart_album": {
+      "kicker": "Fanart Workflow",
+      "title": "Fanart Album",
+      "intro": "Browse your saved fanart library, move through subfolders from the side panel, and preview images without leaving the page."
+    },
+    "fanart_setting": {
+      "kicker": "Fanart Workflow",
+      "title": "Fanart Setting",
+      "intro": "Set the source folder for new downloads, destination root, and the filename format used when fanart is exported."
+    },
+    "album_setting": {
+      "kicker": "Fanart Workflow",
+      "title": "Album Setting",
+      "intro": "Add one or more album library paths here. The album viewer will let you switch between them and browse their subfolders."
+    }
+  }
+}

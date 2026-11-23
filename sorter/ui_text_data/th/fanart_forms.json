@@ -1,0 +1,48 @@
+﻿{
+  "page_ui": {
+    "fanart_setting_form": {
+      "fields": {
+        "source_folder": {
+          "placeholder": "workspace/inbox",
+          "error_messages": {
+            "required": "กรุณาระบุโฟลเดอร์ต้นทาง"
+          }
+        },
+        "destination_folder": {
+          "placeholder": "workspace/library",
+          "error_messages": {
+            "required": "กรุณาระบุโฟลเดอร์ปลายทาง"
+          }
+        },
+        "filename_separator": {
+          "placeholder": "เว้นว่างถ้าไม่ต้องการตัวคั่น"
+        },
+        "date_format_pattern": {
+          "placeholder": "YYYYMMDD",
+          "error_messages": {
+            "required": "กรุณาระบุรูปแบบวันที่"
+          }
+        },
+        "sequence_padding": {
+          "error_messages": {
+            "required": "กรุณาระบุจำนวนหลักของลำดับ"
+          }
+        }
+      },
+      "messages": {
+        "blank_date_format": "รูปแบบวันที่ห้ามเว้นว่าง",
+        "invalid_date_format": "ใช้ได้เฉพาะ DD, MM, YYYY, YY และตัวคั่นอย่าง -, _, หรือ .",
+        "invalid_sequence_padding": "จำนวนหลักของลำดับต้องอยู่ระหว่าง 1 ถึง 9"
+      }
+    },
+    "fanart_http_messages": {
+      "file_outside_inbox": "ไฟล์อยู่นอกโฟลเดอร์ต้นทาง",
+      "file_not_found": "ไม่พบไฟล์",
+      "preview_not_found": "ไม่พบไฟล์พรีวิว",
+      "album_file_invalid": "ไฟล์อัลบั้มไม่ถูกต้อง",
+      "album_file_not_found": "ไม่พบไฟล์อัลบั้ม",
+      "album_preview_invalid": "ไฟล์พรีวิวอัลบั้มไม่ถูกต้อง",
+      "album_preview_not_found": "ไม่พบไฟล์พรีวิวอัลบั้ม"
+    }
+  }
+}

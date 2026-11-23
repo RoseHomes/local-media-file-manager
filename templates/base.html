@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ ui.brand_title }}{% endblock %}</title>
+    {% if ui.theme_name == 'mystic-violet' %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'ui/favicons/mystic-violet.svg' %}?theme={{ ui.theme_name }}">
+    {% elif ui.theme_name == 'cotton-candy-cloud' %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'ui/favicons/cotton-candy-cloud.svg' %}?theme={{ ui.theme_name }}">
+    {% elif ui.theme_name == 'lunar-cloud' %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'ui/favicons/lunar-cloud.svg' %}?theme={{ ui.theme_name }}">
+    {% elif ui.theme_name == 'electric-violet' %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'ui/favicons/mystic-violet.svg' %}?theme={{ ui.theme_name }}">
+    {% else %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'ui/favicons/mystic-violet.svg' %}?theme={{ ui.theme_name }}">
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'shared/css/app.css' %}?v=portfolio">
+    {% block extra_head %}{% endblock %}
+</head>
+<body data-theme="{{ ui.theme_name }}">
+    <div class="app-shell">
+        <aside class="app-sidebar">
+            <div class="sidebar-inner">
+                <div class="brand-panel flex items-center gap-4">
+                    <div class="brand-badge shrink-0">FM</div>
+                    <h1 class="text-[1.45rem] font-semibold tracking-tight text-white">{{ ui.brand_title }}</h1>
+                </div>
+
+                <div class="grid gap-3">
+                    {% for group in ui.menu_config %}
+                    <details class="sidebar-group" data-sidebar-group="{{ group.id }}" 
+                        {% if group.id == 'fanart_filemanage' %}
+                            {% if active_nav == 'fanart_file' or active_nav == 'fanart_album' %}open{% endif %}
+                        {% elif group.id == 'setting_fanart_filemanage' %}
+                            {% if active_nav == 'fanart_setting' or active_nav == 'games_setting' or active_nav == 'character_setting' or active_nav == 'album_setting' %}open{% endif %}
+                        {% elif group.id == 'filemanage' %}
+                            {% if 'filemanage:' in active_nav %}open{% endif %}
+                        {% endif %}
+                    >
+                        <summary class="sidebar-summary">
+                            <span>{{ group.label }}</span>
+                        </summary>
+                        <nav class="sidebar-group-body" aria-label="{{ group.label }} navigation">
+                            {% for item in group.items %}
+                            <a class="menu-link {% if active_nav == item.id %}menu-link-active{% endif %}" data-sw-icon="{{ item.icon }}" href="{% url item.url_name %}">
+                                <span class="menu-dot" aria-hidden="true"></span>
+                                <span>{{ item.label }}</span>
+                            </a>
+                            {% endfor %}
+                        </nav>
+                    </details>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-auto self-stretch px-1 pb-0">
+                    <div class="flex items-center gap-2">
+                        <a class="btn-secondary sidebar-admin-btn flex-1" href="/admin/" target="_blank" rel="noreferrer">{{ ui.buttons.open_admin }}</a>
+                        <a class="sidebar-utility-btn {% if active_nav == 'interface_text_setting' %}sidebar-utility-btn-active{% endif %}" href="{% url 'interface_text_setting' %}" title="{{ ui.buttons.interface_text_settings }}" aria-label="{{ ui.buttons.interface_text_settings }}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="3.2"></circle>
+                                <path d="M19.4 15a1 1 0 0 0 .2 1.1l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V20a2 2 0 1 1-4 0v-.2a1 1 0 0 0-.7-.9 1 1 0 0 0-1 .2l-.1.1a2 2 0 1 1-2.9-2.8l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4a2 2 0 1 1 0-4h.2a1 1 0 0 0 .9-.7 1 1 0 0 0-.2-1l-.1-.1a2 2 0 1 1 2.8-2.9l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4a2 2 0 1 1 4 0v.2a1 1 0 0 0 .7.9 1 1 0 0 0 1-.2l.1-.1a2 2 0 1 1 2.9 2.8l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.2a2 2 0 1 1 0 4h-.2a1 1 0 0 0-.9.7z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="shell-main">
+            <div class="shell-frame">
+                <section class="hero-banner flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div class="max-w-4xl">
+                        <p class="section-kicker">{% block page_kicker %}Fanart Workflow{% endblock %}</p>
+                        <h1 class="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{% block page_heading %}Local Media File Manager{% endblock %}</h1>
+                        {% block page_intro %}{% endblock %}
+                    </div>
+                    <div class="flex flex-wrap gap-3">{% block hero_actions %}{% endblock %}</div>
+                </section>
+
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    <div style="position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); width: 100%; z-index: 50; display: flex; max-width: 24rem; flex-direction: column; gap: 0.75rem; pointer-events: none; padding: 0 1rem;" id="flash-message-stack" aria-live="polite">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-message pointer-events-auto {% if message.tags == 'success' %}flash-message-success{% elif message.tags == 'warning' %}flash-message-warning{% elif message.tags == 'error' %}flash-message-error{% else %}flash-message-default{% endif %}" data-flash-message>
+                    <div class="min-w-0 pr-3">{{ message }}</div>
+                    <button class="flash-message-close" type="button" data-flash-close aria-label="{{ ui.shared_js.close_notification }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% block extra_scripts %}{% endblock %}
+
+    <script id="base-js-config" type="application/json">{"searchPlaceholder":"{{ ui.shared_js.search_placeholder|escapejs }}","emptyLabel":"{{ ui.shared_js.empty_label|escapejs }}","selectLabel":"{{ ui.shared_js.select_label|escapejs }}","clearSelection":"{{ ui.shared_js.clear_selection|escapejs }}","closeNotification":"{{ ui.shared_js.close_notification|escapejs }}"}</script>
+    <script src="{% static 'shared/js/base.js' %}"></script>
+</body>
+</html>
+
+
+
+

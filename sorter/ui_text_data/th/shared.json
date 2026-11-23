@@ -1,0 +1,37 @@
+{
+  "brand_title": "Local Media File Manager",
+  "groups": {
+    "fanart_filemanage": "จัดการแฟนอาร์ต",
+    "setting_fanart_filemanage": "ตั้งค่าแฟนอาร์ต",
+    "filemanage": "จัดการไฟล์"
+  },
+  "sorts": {
+    "date_desc": "ใหม่สุดก่อน",
+    "date_asc": "เก่าสุดก่อน",
+    "name_asc": "ชื่อ A-Z",
+    "name_desc": "ชื่อ Z-A"
+  },
+  "language_modes": {
+    "en": "อังกฤษ",
+    "th": "ไทย",
+    "mixed": "หัวข้ออังกฤษ + คำอธิบายไทย"
+  },
+  "themes": {
+    "cocoa-brown": "Cocoa Brown",
+    "mystic-violet": "Mystic Violet",
+    "cotton-candy-cloud": "Cotton Candy Cloud",
+    "lunar-cloud": "Lunar Cloud",
+    "electric-violet": "Electric Violet"
+  },
+  "buttons": {
+    "open_admin": "เปิดแอดมิน",
+    "interface_text_settings": "ตั้งค่าข้อความหน้าจอ"
+  },
+  "shared_js": {
+    "search_placeholder": "ค้นหาตัวเลือก",
+    "empty_label": "ไม่พบตัวเลือก",
+    "select_label": "เลือกตัวเลือก",
+    "clear_selection": "ล้างการเลือก",
+    "close_notification": "ปิดการแจ้งเตือน"
+  }
+}

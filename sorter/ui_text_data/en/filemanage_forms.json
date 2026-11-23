@@ -1,0 +1,320 @@
+{
+  "page_ui": {
+    "filemanage_workspace_form": {
+      "fields": {
+        "root_folder": {
+          "label": "Root Folder",
+          "help_text": "Root folder used by the FileManage tools.",
+          "placeholder": "workspace/filemanage",
+          "error_messages": {
+            "required": "Enter a workspace root folder."
+          }
+        }
+      }
+    },
+    "filemanage_rename_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Shared: scan the root folder only, or include every nested folder too."
+        },
+        "workflow": {
+          "label": "Workflow",
+          "help_text": "Choose the active Rename flow. The form below will switch to the fields used by that workflow."
+        },
+        "text_action": {
+          "label": "Text Action",
+          "help_text": "Text Transform only: choose whether to replace, add, or remove text."
+        },
+        "search_text": {
+          "label": "Search Text",
+          "help_text": "Text Transform only: the text to find inside each matching filename.",
+          "placeholder": "Text to search in file names"
+        },
+        "replace_text": {
+          "label": "Replace Text",
+          "help_text": "Text Transform only: what should replace the matched text.",
+          "placeholder": "Replacement text"
+        },
+        "added_text": {
+          "label": "Added Text",
+          "help_text": "Text Transform only: the text added as a prefix or suffix. Leave this blank when Per Folder Alphabet Mode should add a, b, c... per folder instead.",
+          "placeholder": "Text to add"
+        },
+        "match_scope": {
+          "label": "Match Scope",
+          "help_text": "Text Transform only: change the filename only, or include the extension as well."
+        },
+        "match_occurrence": {
+          "label": "Match Occurrence",
+          "help_text": "Text Transform only: apply the change to all, the first, or the last match."
+        },
+        "per_folder_alpha_mode": {
+          "label": "Per Folder Alphabet Mode",
+          "help_text": "Text Transform only: for Replace, Add Prefix, or Add Suffix, ignore the replacement or added text and assign a, b, c... per folder in sorted order."
+        },
+        "trim_delimiter": {
+          "label": "Delimiter",
+          "help_text": "Trim by Delimiter only: the delimiter used as the cut point, such as _, -, (, or [.",
+          "placeholder": "_"
+        },
+        "trim_action": {
+          "label": "Trim Action",
+          "help_text": "Trim by Delimiter only: choose which side of the delimiter should remain or be removed."
+        },
+        "delimiter_occurrence": {
+          "label": "Delimiter Occurrence",
+          "help_text": "Trim by Delimiter only: use the first or last matching delimiter in the filename."
+        },
+        "include_delimiter": {
+          "label": "Keep Delimiter",
+          "help_text": "Trim by Delimiter only: keep the delimiter in the remaining filename when enabled."
+        },
+        "order_ascending": {
+          "label": "Order Ascending",
+          "help_text": "Shared: controls folder and file order for alphabet mode and numbering."
+        },
+        "start_letter": {
+          "label": "Start Letter",
+          "help_text": "Text Transform only: first letter used when per-folder alphabet mode is enabled for Replace, Add Prefix, or Add Suffix."
+        },
+        "number_action": {
+          "label": "Number Action",
+          "help_text": "Numbering only: swap existing numbers, add a numbered prefix or suffix, or replace the whole filename with the sequence."
+        },
+        "start_number": {
+          "label": "Start Number",
+          "help_text": "Numbering only: the first number used for sequence-based actions."
+        },
+        "increment": {
+          "label": "Increment",
+          "help_text": "Numbering only: how much the sequence increases each step."
+        },
+        "number_width": {
+          "label": "Number Width",
+          "help_text": "Numbering only: digits to use, for example 2 for 01 or 3 for 001."
+        },
+        "number_separator": {
+          "label": "Number Separator",
+          "help_text": "Numbering only: text placed between the sequence and the filename.",
+          "placeholder": "_"
+        },
+        "reset_per_folder": {
+          "label": "Reset Per Folder",
+          "help_text": "Numbering only: restart sequence numbers inside each folder."
+        },
+        "target_extensions": {
+          "label": "Target Extensions",
+          "help_text": "Shared: comma-separated extensions to include, such as .png,.jpg. Leave blank to scan every file type.",
+          "placeholder": ".png,.jpg,.jpeg"
+        }
+      },
+      "choices": {
+        "workflow": {
+          "text_transform": "Text Transform",
+          "trim_delimiter": "Trim by Delimiter",
+          "numbering": "Numbering"
+        },
+        "text_action": {
+          "replace": "Replace Text",
+          "add_prefix": "Add Prefix",
+          "add_suffix": "Add Suffix",
+          "remove": "Remove Text"
+        },
+        "match_scope": {
+          "stem": "Filename Only",
+          "full_name": "Include Extension"
+        },
+        "match_occurrence": {
+          "all": "All Matches",
+          "first": "First Match",
+          "last": "Last Match"
+        },
+        "trim_action": {
+          "keep_before": "Keep Text Before Delimiter",
+          "keep_after": "Keep Text After Delimiter",
+          "remove_before": "Remove Text Before Delimiter",
+          "remove_after": "Remove Text After Delimiter"
+        },
+        "delimiter_occurrence": {
+          "first": "First Delimiter",
+          "last": "Last Delimiter"
+        },
+        "number_action": {
+          "swap_numbers": "Swap Numbers",
+          "add_prefix_sequence": "Add Sequence Prefix",
+          "add_suffix_sequence": "Add Sequence Suffix",
+          "replace_with_sequence": "Replace With Sequence"
+        }
+      }
+    },
+    "filemanage_extension_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Scan the workspace recursively when enabled."
+        },
+        "old_extension": {
+          "label": "Source Extension",
+          "help_text": "Choose .all to include every supported image type, or limit the run to one source extension."
+        },
+        "new_extension": {
+          "label": "Target Extension",
+          "help_text": "Choose the extension that converted image files should be saved with."
+        }
+      },
+      "choices": {
+        "old_extension": {
+          ".all": "All (all image types)",
+          ".png": "PNG",
+          ".jpg": "JPG",
+          ".jpeg": "JPEG",
+          ".webp": "WebP",
+          ".gif": "GIF",
+          ".bmp": "BMP",
+          ".jfif": "JFIF"
+        },
+        "new_extension": {
+          ".png": "PNG",
+          ".jpg": "JPG",
+          ".jpeg": "JPEG",
+          ".webp": "WebP",
+          ".gif": "GIF",
+          ".bmp": "BMP",
+          ".jfif": "JFIF"
+        }
+      }
+    },
+    "filemanage_zip_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Scan the workspace recursively for ZIP files when enabled."
+        },
+        "delete_archives_after_extract": {
+          "label": "Delete Archives After Extract",
+          "help_text": "Permanently delete the source ZIP files after a successful extraction."
+        }
+      }
+    },
+    "filemanage_images_to_pdf_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Gather images from all subfolders within the workspace to include in the PDF."
+        },
+        "image_extensions": {
+          "label": "Image Extensions",
+          "placeholder": ".png,.jpg,.jpeg,.webp"
+        },
+        "jpg_quality": {
+          "label": "JPG Quality"
+        },
+        "delete_source_images": {
+          "label": "Delete Source Images",
+          "help_text": "Delete the original image files once the PDF creation is complete."
+        },
+        "fit_to_largest": {
+          "label": "Fit To Largest Page",
+          "help_text": "Resizes every page in the PDF to match the dimensions of the largest image."
+        },
+        "upscale_method": {
+          "label": "Upscale Method",
+          "help_text": "Choose how to handle images smaller than the page (scale up or add padding)."
+        }
+      },
+      "choices": {
+        "upscale_method": {
+          "scale": "Scale to Fit",
+          "pad": "Pad Canvas"
+        }
+      }
+    },
+    "filemanage_pdf_to_images_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Scan the workspace recursively for PDF files to convert into images."
+        },
+        "delete_source_pdfs": {
+          "label": "Delete Source PDFs",
+          "help_text": "Delete the source PDF files after they have been successfully converted."
+        },
+        "image_format": {
+          "label": "Image Format",
+          "help_text": "Select the desired image output format (JPG or PNG)."
+        },
+        "jpeg_quality": {
+          "label": "JPEG Quality",
+          "help_text": "Set the JPEG quality (1-100). Higher values produce clearer images but larger files."
+        }
+      },
+      "choices": {
+        "image_format": {
+          "jpg": "JPG",
+          "png": "PNG"
+        }
+      }
+    },
+    "filemanage_webp_to_mp4_form": {
+      "fields": {
+        "output_root": {
+          "label": "Output Root",
+          "help_text": "Destination root for converted MP4 files. The folder structure from the workspace is mirrored here.",
+          "placeholder": "webp-to-mp4-output"
+        },
+        "include_subfolders": {
+          "label": "Include Subfolders",
+          "help_text": "Scan the workspace recursively for .webp files when enabled."
+        },
+        "overwrite_existing": {
+          "label": "Overwrite Existing Files",
+          "help_text": "Replace existing MP4 files in the output root instead of skipping them."
+        },
+        "crf": {
+          "label": "CRF",
+          "help_text": "Lower CRF means higher output quality and larger file sizes. 18 is the original script default."
+        },
+        "preset": {
+          "label": "Preset",
+          "help_text": "FFmpeg encoding speed preset used by libx264 during conversion."
+        }
+      },
+      "choices": {
+        "preset": {
+          "ultrafast": "ultrafast",
+          "superfast": "superfast",
+          "veryfast": "veryfast",
+          "faster": "faster",
+          "fast": "fast",
+          "medium": "medium",
+          "slow": "slow",
+          "slower": "slower",
+          "veryslow": "veryslow"
+        }
+      }
+    },
+    "filemanage_fix_jpg_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "Include Subfolders"
+        },
+        "order_ascending": {
+          "label": "Order Ascending",
+          "help_text": "Controls the order used when the recursive JPG fix scans matching files."
+        },
+        "target_extensions": {
+          "label": "Target Extensions",
+          "placeholder": ".png,.jpeg,.webp or blank for all"
+        }
+      }
+    },
+    "filemanage_http_messages": {
+      "method_not_allowed": "Method not allowed.",
+      "invalid_data": "Invalid data.",
+      "job_not_found": "Job not found.",
+      "unknown_operation": "Unknown FileManage operation.",
+      "unknown_setting_page": "Unknown FileManage setting page."
+    }
+  }
+}

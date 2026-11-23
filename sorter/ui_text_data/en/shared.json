@@ -1,0 +1,37 @@
+{
+  "brand_title": "Local Media File Manager",
+  "groups": {
+    "fanart_filemanage": "Fanart FileManage",
+    "setting_fanart_filemanage": "Setting Fanart FileManage",
+    "filemanage": "FileManage"
+  },
+  "sorts": {
+    "date_desc": "Newest first",
+    "date_asc": "Oldest first",
+    "name_asc": "Name A-Z",
+    "name_desc": "Name Z-A"
+  },
+  "language_modes": {
+    "en": "English",
+    "th": "Thai",
+    "mixed": "English title + Thai description"
+  },
+  "themes": {
+    "cocoa-brown": "Cocoa Brown",
+    "mystic-violet": "Mystic Violet",
+    "cotton-candy-cloud": "Cotton Candy Cloud",
+    "lunar-cloud": "Lunar Cloud",
+    "electric-violet": "Electric Violet"
+  },
+  "buttons": {
+    "open_admin": "Open Admin",
+    "interface_text_settings": "Interface Text Settings"
+  },
+  "shared_js": {
+    "search_placeholder": "Search options",
+    "empty_label": "No options found",
+    "select_label": "Select an option",
+    "clear_selection": "Clear selection",
+    "close_notification": "Close notification"
+  }
+}

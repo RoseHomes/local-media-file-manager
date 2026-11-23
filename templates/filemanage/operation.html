@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro }}
+</p>
+{% endblock %}
+
+{% block hero_actions %}
+<div class="flex flex-wrap items-center gap-3">
+    <form id="filemanage-run-form" method="post" action="{{ run_url }}">
+        {% csrf_token %}
+        <button class="btn-primary" id="filemanage-run-button" type="submit" {% if preview.total_count == 0 %}disabled aria-disabled="true" title="{{ operation_text.run_disabled_title }}"{% endif %}>{{ operation.button_label }}</button>
+    </form>
+    <button class="btn-secondary hidden" id="filemanage-reopen-run-button" type="button">{{ operation_text.reopen_run_log }}</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="filemanage-operation-layout">
+    <section class="panel panel-elevated flex min-h-[calc(100vh-7rem)] flex-col">
+        <div class="panel-header">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ operation_text.preview_title }}</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ operation_text.preview_intro }}</p>
+                </div>
+                <div class="metric-pill">
+                    <div class="text-3xl font-semibold leading-none text-ink" id="filemanage-preview-total">{{ preview.total_count }}</div>
+                    <div class="mt-2 text-xs uppercase tracking-[0.24em] text-muted">{{ operation_text.matching_items }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body flex-1">
+            <div class="toolbar-shell mb-4 flex flex-wrap items-center gap-3">
+                <input class="input min-w-[18rem] flex-1" id="operation-filter" type="search" placeholder="{{ operation_text.filter_placeholder }}">
+                <select class="input w-auto min-w-[13rem] shrink-0" id="operation-sort" aria-label="{{ operation_text.sort_aria_label }}">
+                    <option value="date_desc">{{ operation_text.sort_date_desc }}</option>
+                    <option value="date_asc">{{ operation_text.sort_date_asc }}</option>
+                    <option value="name_asc">{{ operation_text.sort_name_asc }}</option>
+                    <option value="name_desc">{{ operation_text.sort_name_desc }}</option>
+                </select>
+                <div class="ml-auto text-sm text-muted"><span class="font-semibold text-ink" id="filemanage-preview-folder-count">{{ preview.folder_count }}</span> {{ operation_text.folders_affected }}</div>
+            </div>
+
+            <div class="mb-4 rounded-2xl border border-amber-200 bg-amber-50/90 px-4 py-3 text-sm text-amber-700{% if not preview.truncated %} hidden{% endif %}" id="filemanage-preview-truncated">
+                {{ operation_text.preview_capped_intro }} <span id="filemanage-preview-truncated-visible">{{ preview.items|length }}</span> {{ operation_text.preview_capped_middle }} <span id="filemanage-preview-truncated-total">{{ preview.total_count }}</span> {{ operation_text.preview_capped_end }}
+            </div>
+
+            <div class="custom-scrollbar flex-1 overflow-y-auto pr-2 {% if operation.slug == 'rename-files' %}max-h-[calc(224vh-11rem)]{% else %}max-h-[calc(100vh-11rem)]{% endif %}{% if not preview.items %} hidden{% endif %}" id="filemanage-preview-list-wrap">
+                <div class="grid gap-3" id="operation-list">
+                    {% for item in preview.items %}
+                        <article class="file-task-card" data-search="{{ item.searchable }}" data-name="{{ item.title|lower }}" data-created="{{ item.created_ts }}">
+                            <div class="file-task-head">
+                                <div>
+                                    <div class="file-task-title">{{ item.title }}</div>
+                                    <div class="file-task-subtitle">{{ item.folder }}</div>
+                                </div>
+                                <div class="file-kind-badge">{{ item.kind }}</div>
+                            </div>
+                            <div class="mt-4 grid gap-3 text-sm text-muted md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+                                <div class="file-task-block">
+                                    <div class="file-task-label">{{ operation_text.source }}</div>
+                                    <div class="file-task-value">{{ item.source }}</div>
+                                </div>
+                                <div class="file-task-block">
+                                    <div class="file-task-label">{{ operation_text.target }}</div>
+                                    <div class="file-task-value">{{ item.target }}</div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <span class="operation-chip">{{ item.action }}</span>
+                                    {% if item.note %}<span>{{ item.note }}</span>{% endif %}
+                                </div>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <span>{{ item.created_label }}</span>
+                                    <span>{{ item.size_label }}</span>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="empty-state{% if preview.items %} hidden{% endif %}" id="filemanage-preview-empty">{{ operation_text.empty_preview }}</div>
+        </div>
+    </section>
+
+    <aside class="panel panel-elevated filemanage-operation-sidebar">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ operation_text.panel_title }}</h2>
+            <p class="mt-2 text-sm leading-6 text-muted">{{ operation_text.panel_intro }}</p>
+            <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-3">
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink" id="filemanage-workspace-folder-count">{{ workspace_snapshot.folder_count }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ operation_text.workspace_folders }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink" id="filemanage-workspace-file-count">{{ workspace_snapshot.file_count }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ operation_text.workspace_files }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink" id="filemanage-planned-actions-count">{{ preview.total_count }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ operation_text.planned_actions }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body filemanage-settings-panel-body flex flex-col gap-4">
+            <form class="filemanage-settings-form flex flex-col gap-4" method="post" autocomplete="off" data-filemanage-setting-form>
+                {% csrf_token %}
+                <section class="helper-card filemanage-settings-card flex flex-col gap-2">
+                    <div class="text-sm font-semibold text-ink">{{ operation_text.workspace_root }}</div>
+                    <label class="sr-only" for="{{ workspace_form.root_folder.id_for_label }}">{{ workspace_form.root_folder.label }}</label>
+                    {{ workspace_form.root_folder }}
+                    {% if workspace_form.root_folder.errors %}
+                        <ul class="errorlist">
+                            {% for error in workspace_form.root_folder.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if workspace_form.root_folder.help_text %}<div class="text-sm leading-6 text-muted">{{ workspace_form.root_folder.help_text }}</div>{% endif %}
+                </section>
+
+                <section class="helper-card filemanage-settings-card">
+                    <div class="mb-4">
+                        <div class="text-sm font-semibold text-ink">{{ setting_page.title }}</div>
+                        <div class="mt-1 text-sm leading-6 text-muted">{{ setting_page.description }}</div>
+                        {% if setting_page.slug == 'rename' %}
+                            <div class="mt-3 text-sm leading-6 text-muted">{{ setting_text.rename_helper_intro }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="filemanage-settings-fields">
+                        {% include "filemanage/_setting_form_fields.html" with form=setting_form %}
+                    </div>
+                    <div class="filemanage-settings-submit-row flex flex-wrap gap-3 mt-4">
+                        <button class="btn-secondary self-start" type="submit">{{ setting_text.save_settings }}</button>
+                        <button class="btn-secondary self-start !bg-transparent !border-transparent opacity-75 hover:opacity-100" type="reset">{{ setting_text.reset }}</button>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </aside>
+</div>
+
+<div class="confirm-modal-overlay hidden" id="filemanage-run-confirm-modal" aria-hidden="true">
+    <div class="confirm-modal-card max-w-xl">
+        <div class="text-xs font-semibold uppercase tracking-[0.24em] text-warm">{{ operation_text.confirm_kicker }}</div>
+        <h2 class="mt-3 text-3xl font-semibold tracking-tight text-ink" id="filemanage-run-confirm-title">{{ operation_text.confirm_title }}</h2>
+        <p class="mt-4 text-sm leading-6 text-muted" id="filemanage-run-confirm-copy">{{ operation_text.confirm_copy }}</p>
+        <div class="confirm-modal-target" id="filemanage-run-confirm-target"></div>
+        <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button class="btn-secondary !px-5 !py-3" id="filemanage-run-confirm-cancel" type="button">{{ operation_text.confirm_cancel }}</button>
+            <button class="btn-primary !px-5 !py-3" id="filemanage-run-confirm-submit" type="button">{{ operation_text.confirm_button }}</button>
+        </div>
+    </div>
+</div>
+
+<div class="fm-run-modal hidden" id="filemanage-run-modal" aria-hidden="true">
+    <div class="fm-run-modal-backdrop"></div>
+    <div class="fm-run-modal-card">
+        <div class="fm-run-modal-header">
+            <div>
+                <div class="text-xs font-semibold uppercase tracking-[0.24em] text-warm">{{ operation_text.live_run_log }}</div>
+                <h2 class="mt-3 text-3xl font-semibold tracking-tight text-ink" id="filemanage-run-title">{{ operation.label }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted" id="filemanage-run-message">{{ operation_text.starting_job }}</p>
+            </div>
+            <button class="modal-close-button" type="button" data-close-run-modal aria-label="{{ operation_text.close_run_log }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="fm-run-modal-metrics">
+            <div class="metric-pill">
+                <div class="text-3xl font-semibold leading-none text-ink" id="filemanage-run-total">0</div>
+                <div class="mt-2 text-xs uppercase tracking-[0.24em] text-muted">{{ operation_text.total_items }}</div>
+            </div>
+            <div class="metric-pill">
+                <div class="text-3xl font-semibold leading-none text-ink" id="filemanage-run-completed">0</div>
+                <div class="mt-2 text-xs uppercase tracking-[0.24em] text-muted">{{ operation_text.completed }}</div>
+            </div>
+        </div>
+        <div class="fm-run-modal-grid">
+            <section class="fm-run-panel">
+                <div class="fm-run-panel-head">
+                    <h3 class="text-lg font-semibold text-ink">{{ operation_text.processing_now }}</h3>
+                    <span class="operation-chip" id="filemanage-run-status-chip">{{ operation_text.running }}</span>
+                </div>
+                <div class="fm-run-current" id="filemanage-run-current"></div>
+                <div class="fm-run-errors hidden" id="filemanage-run-errors-wrap">
+                    <div class="text-sm font-semibold text-rose-700">{{ operation_text.problems }}</div>
+                    <div class="custom-scrollbar mt-3 max-h-44 overflow-y-auto pr-1" id="filemanage-run-errors"></div>
+                </div>
+            </section>
+            <section class="fm-run-panel">
+                <div class="fm-run-panel-head">
+                    <h3 class="text-lg font-semibold text-ink">{{ operation_text.completed }}</h3>
+                    <span class="text-sm text-muted" id="filemanage-run-completed-copy">0 {{ operation_text.items_suffix }}</span>
+                </div>
+                <div class="custom-scrollbar fm-run-completed" id="filemanage-run-finished"></div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ operation_text|json_script:"filemanage-operation-text" }}
+<script id="filemanage-operation-js-config" type="application/json">{"operationLabel":"{{ operation.label|escapejs }}","previewTotalCount":{{ preview.total_count }},"refreshUrl":"{% url 'filemanage_operation_snapshot' operation.slug %}","uiText":{"preparing":"{{ operation_text.starting_job|escapejs }}","running":"{{ operation_text.running|escapejs }}","completed":"{{ operation_text.completed|escapejs }}","waiting":"{{ operation_text.waiting_first_file|escapejs }}","nothingMatched":"{{ operation_text.nothing_matched|escapejs }}","noCompleted":"{{ operation_text.no_completed_yet|escapejs }}","currentLabel":"{{ operation_text.processing_label|escapejs }}","doneLabel":"{{ operation_text.done_label|escapejs }}","targetLabel":"{{ operation_text.target_label|escapejs }}","itemsSuffix":"{{ operation_text.items_suffix|escapejs }}","errorLabel":"{{ operation_text.error_label|escapejs }}","confirmTitle":"{{ operation_text.confirm_title|escapejs }}","confirmCopy":"{{ operation_text.confirm_copy|escapejs }}","confirmButton":"{{ operation_text.confirm_button|escapejs }}","confirmCancel":"{{ operation_text.confirm_cancel|escapejs }}","confirmTargetLabel":"{{ operation_text.confirm_target_label|escapejs }}","runDisabledTitle":"{{ operation_text.run_disabled_title|escapejs }}","previewCappedIntro":"{{ operation_text.preview_capped_intro|escapejs }}","previewCappedMiddle":"{{ operation_text.preview_capped_middle|escapejs }}","previewCappedEnd":"{{ operation_text.preview_capped_end|escapejs }}","source":"{{ operation_text.source|escapejs }}","target":"{{ operation_text.target|escapejs }}","emptyPreview":"{{ operation_text.empty_preview|escapejs }}"}}</script>
+<script src="{% static 'filemanage/js/operation.js' %}"></script>
+<script src="{% static 'filemanage/js/operation-preview.js' %}"></script>
+<script src="{% static 'filemanage/js/operation-run-log.js' %}"></script>
+<script src="{% static 'filemanage/js/operation-settings.js' %}"></script>
+{% if setting_page.slug == 'rename' %}
+<script id="filemanage-setting-js-config" type="application/json">{"enabledLabel":"{{ setting_text.enabled|escapejs }}","disabledLabel":"{{ setting_text.disabled|escapejs }}","emptyLabel":"{{ setting_text.empty|escapejs }}"}</script>
+<script src="{% static 'filemanage/js/setting.js' %}"></script>
+{% endif %}
+{% endblock %}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block hero_actions %}{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(21rem,0.85fr)]">
+    <section class="panel">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_setting_text.section_title }}</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ fanart_setting_text.section_intro }}</p>
+        </div>
+        <div class="panel-body">
+            <form class="grid gap-5" method="post" autocomplete="off">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <ul class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.source_folder.id_for_label }}">{{ fanart_setting_text.source_label }}</label>
+                    {{ form.source_folder }}
+                    {% if form.source_folder.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.source_folder.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.source_intro }}</div>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="file-checkbox-row" for="{{ form.include_subfolders.id_for_label }}">
+                        <span class="flex items-start gap-3">
+                            {{ form.include_subfolders }}
+                            <span class="grid gap-1">
+                                <span class="text-sm font-semibold text-ink">{{ fanart_setting_text.include_subfolders_label }}</span>
+                            </span>
+                        </span>
+                    </label>
+                    <div class="px-1 text-sm leading-6 text-muted">{{ fanart_setting_text.include_subfolders_intro }}</div>
+                    {% if form.include_subfolders.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.include_subfolders.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.destination_folder.id_for_label }}">{{ fanart_setting_text.destination_label }}</label>
+                    {{ form.destination_folder }}
+                    {% if form.destination_folder.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.destination_folder.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.destination_intro }}</div>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.filename_separator.id_for_label }}">{{ fanart_setting_text.filename_separator_label }}</label>
+                    {{ form.filename_separator }}
+                    {% if form.filename_separator.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.filename_separator.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.filename_separator_intro }}</div>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.date_format_pattern.id_for_label }}">{{ fanart_setting_text.date_format_label }}</label>
+                    {{ form.date_format_pattern }}
+                    {% if form.date_format_pattern.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.date_format_pattern.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.date_format_intro }}</div>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.sequence_padding.id_for_label }}">{{ fanart_setting_text.sequence_digits_label }}</label>
+                    {{ form.sequence_padding }}
+                    {% if form.sequence_padding.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.sequence_padding.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.sequence_digits_intro }}</div>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.default_sort.id_for_label }}">{{ fanart_setting_text.default_sort_label }}</label>
+                    {{ form.default_sort }}
+                    {% if form.default_sort.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.default_sort.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="text-sm leading-6 text-muted">{{ fanart_setting_text.default_sort_intro }}</div>
+                </div>
+
+                <button class="btn-primary" type="submit">{{ fanart_setting_text.save_settings }}</button>
+            </form>
+        </div>
+    </section>
+
+    <aside class="grid gap-6">
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_setting_text.current_paths_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ fanart_setting_text.current_paths_intro }}</p>
+            </div>
+            <div class="panel-body grid gap-4">
+                <div class="helper-card">
+                    <div class="text-xs font-semibold uppercase tracking-[0.22em] text-muted">{{ fanart_setting_text.source_title }}</div>
+                    <div class="mt-3 break-all text-sm leading-6 text-ink"><code>{{ fanart_setting.source_folder }}</code></div>
+                </div>
+                <div class="helper-card">
+                    <div class="text-xs font-semibold uppercase tracking-[0.22em] text-muted">{{ fanart_setting_text.destination_title }}</div>
+                    <div class="mt-3 break-all text-sm leading-6 text-ink"><code>{{ fanart_setting.destination_folder }}</code></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_setting_text.filename_preview_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ fanart_setting_text.filename_preview_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card">
+                    <div class="text-xs font-semibold uppercase tracking-[0.22em] text-muted">{{ fanart_setting_text.preview_label }}</div>
+                    <div class="mt-3 break-all text-sm leading-6 text-ink"><code id="filename-preview">{{ filename_preview }}</code></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_setting_text.workflow_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ fanart_setting_text.workflow_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for step in fanart_setting_text.workflow_steps %}
+                        <p><strong class="font-semibold text-ink">{{ forloop.counter }}.</strong> {{ step }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script id="fanart-setting-js-config" type="application/json">{"separatorInputId":"{{ form.filename_separator.id_for_label|escapejs }}","dateFormatInputId":"{{ form.date_format_pattern.id_for_label|escapejs }}","sequencePaddingInputId":"{{ form.sequence_padding.id_for_label|escapejs }}"}</script>
+<script src="{% static 'fanart/js/fanart_setting.js' %}"></script>
+{% endblock %}

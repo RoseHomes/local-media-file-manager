@@ -1,0 +1,86 @@
+﻿{
+  "page_ui": {
+    "catalog_game_import_form": {
+      "fields": {
+        "root_folder": {
+          "placeholder": "workspace/library",
+          "error_messages": {
+            "required": "กรุณาระบุพาธโฟลเดอร์หลักของคลังเกม"
+          }
+        }
+      },
+      "messages": {
+        "blank_folder": "พาธโฟลเดอร์ห้ามเว้นว่าง"
+      }
+    },
+    "catalog_game_manual_form": {
+      "fields": {
+        "manual_kind": {
+          "error_messages": {
+            "required": "กรุณาเลือกประเภทรายการ"
+          }
+        },
+        "manual_title": {
+          "placeholder": "ชื่อเกม",
+          "error_messages": {
+            "required": "กรุณาระบุชื่อที่ใช้แสดง"
+          }
+        },
+        "manual_folder_name": {
+          "placeholder": "ชื่อโฟลเดอร์ (ถ้ามี)"
+        },
+        "manual_parent_game": {
+          "empty_label": "เลือกเกมหลัก",
+          "error_messages": {
+            "required": "กรุณาเลือกเกมหลัก"
+          }
+        }
+      },
+      "choices": {
+        "manual_kind": {
+          "root": "เกมหลัก",
+          "subfolder": "โฟลเดอร์ย่อย"
+        }
+      },
+      "messages": {
+        "blank_title": "ชื่อที่ใช้แสดงห้ามเว้นว่าง",
+        "missing_parent": "กรุณาเลือกเกมหลักสำหรับโฟลเดอร์ย่อยนี้"
+      }
+    },
+    "catalog_character_import_form": {
+      "fields": {
+        "root_folder": {
+          "placeholder": "workspace/library/characters",
+          "error_messages": {
+            "required": "กรุณาระบุพาธโฟลเดอร์นำเข้าตัวละคร"
+          }
+        }
+      },
+      "messages": {
+        "blank_folder": "พาธโฟลเดอร์ห้ามเว้นว่าง"
+      }
+    },
+    "catalog_character_manual_form": {
+      "fields": {
+        "manual_game": {
+          "empty_label": "เลือกเกมหลัก",
+          "error_messages": {
+            "required": "กรุณาเลือกเกมหลัก"
+          }
+        },
+        "manual_name": {
+          "placeholder": "ชื่อตัวละคร",
+          "error_messages": {
+            "required": "กรุณาระบุชื่อตัวละคร"
+          }
+        },
+        "manual_description": {
+          "placeholder": "คำอธิบาย (ถ้ามี)"
+        }
+      },
+      "messages": {
+        "blank_name": "ชื่อตัวละครห้ามเว้นว่าง"
+      }
+    }
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "page_ui": {
+    "filemanage_workspace_form": {
+      "fields": {
+        "root_folder": {
+          "label": "โฟลเดอร์หลัก",
+          "help_text": "โฟลเดอร์หลักที่เครื่องมือ FileManage ทุกตัวจะใช้ทำงาน",
+          "placeholder": "workspace/filemanage",
+          "error_messages": {
+            "required": "กรุณาระบุโฟลเดอร์หลักของ workspace"
+          }
+        }
+      }
+    },
+    "filemanage_rename_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "ใช้ร่วมกัน: จะสแกนเฉพาะโฟลเดอร์หลัก หรือรวมทุกโฟลเดอร์ย่อยด้วย"
+        },
+        "workflow": {
+          "label": "รูปแบบการทำงาน",
+          "help_text": "เลือกโหมด Rename ที่ต้องการใช้ ฟอร์มด้านล่างจะปรับให้เหลือเฉพาะช่องที่เกี่ยวข้อง"
+        },
+        "text_action": {
+          "label": "การจัดการข้อความ",
+          "help_text": "เฉพาะ Text Transform: เลือกว่าจะแทนที่ เพิ่ม หรือลบข้อความ"
+        },
+        "search_text": {
+          "label": "ข้อความที่ค้นหา",
+          "help_text": "เฉพาะ Text Transform: ข้อความที่ต้องการหาในชื่อไฟล์",
+          "placeholder": "ข้อความที่ต้องการหาในชื่อไฟล์"
+        },
+        "replace_text": {
+          "label": "ข้อความแทนที่",
+          "help_text": "เฉพาะ Text Transform: ข้อความที่จะใช้แทนค่าที่พบ",
+          "placeholder": "ข้อความแทนที่"
+        },
+        "added_text": {
+          "label": "ข้อความที่เพิ่ม",
+          "help_text": "เฉพาะ Text Transform: ข้อความที่จะเติมเป็นคำนำหน้าหรือคำต่อท้าย ถ้าต้องการให้โหมดตัวอักษรต่อโฟลเดอร์ใส่ a, b, c... แทน ให้เว้นช่องนี้ว่างได้",
+          "placeholder": "ข้อความที่ต้องการเพิ่ม"
+        },
+        "match_scope": {
+          "label": "ขอบเขตการจับคู่",
+          "help_text": "เฉพาะ Text Transform: จะเปลี่ยนเฉพาะชื่อไฟล์ หรือรวมส่วนขยายด้วย"
+        },
+        "match_occurrence": {
+          "label": "ตำแหน่งที่จับคู่",
+          "help_text": "เฉพาะ Text Transform: ใช้กับทุกตำแหน่ง ตำแหน่งแรก หรือสุดท้าย"
+        },
+        "per_folder_alpha_mode": {
+          "label": "โหมดตัวอักษรต่อโฟลเดอร์",
+          "help_text": "เฉพาะ Text Transform: สำหรับ Replace, เพิ่มด้านหน้า, หรือเพิ่มด้านท้าย จะไม่ใช้ข้อความแทนที่หรือข้อความที่เพิ่ม แต่จะใส่ a, b, c... แยกตามแต่ละโฟลเดอร์ตามลำดับ"
+        },
+        "trim_delimiter": {
+          "label": "ตัวคั่น",
+          "help_text": "เฉพาะ Trim by Delimiter: ตัวคั่นที่ใช้เป็นจุดตัด เช่น _, -, (, หรือ [",
+          "placeholder": "_"
+        },
+        "trim_action": {
+          "label": "วิธีตัดข้อความ",
+          "help_text": "เฉพาะ Trim by Delimiter: เลือกว่าจะคงหรือเอาส่วนไหนออกจากจุดคั่น"
+        },
+        "delimiter_occurrence": {
+          "label": "ตำแหน่งของตัวคั่น",
+          "help_text": "เฉพาะ Trim by Delimiter: ใช้ตัวคั่นตัวแรกหรือตัวสุดท้ายในชื่อไฟล์"
+        },
+        "include_delimiter": {
+          "label": "คงตัวคั่นไว้",
+          "help_text": "เฉพาะ Trim by Delimiter: เปิดไว้ถ้าต้องการเก็บตัวคั่นไว้ในชื่อใหม่"
+        },
+        "order_ascending": {
+          "label": "เรียงจากน้อยไปมาก",
+          "help_text": "ใช้ร่วมกัน: มีผลต่อการเรียงโฟลเดอร์และไฟล์ในโหมดตัวอักษรและลำดับเลข"
+        },
+        "start_letter": {
+          "label": "อักษรเริ่มต้น",
+          "help_text": "เฉพาะ Text Transform: อักษรตัวแรกที่จะใช้เมื่อเปิดโหมดตัวอักษรต่อโฟลเดอร์สำหรับ Replace, เพิ่มด้านหน้า, หรือเพิ่มด้านท้าย"
+        },
+        "number_action": {
+          "label": "การจัดการตัวเลข",
+          "help_text": "เฉพาะ Numbering: สลับตัวเลขเดิม เพิ่มเลขนำหน้า/ต่อท้าย หรือแทนชื่อไฟล์ด้วยลำดับ"
+        },
+        "start_number": {
+          "label": "เลขเริ่มต้น",
+          "help_text": "เฉพาะ Numbering: เลขตัวแรกของลำดับ"
+        },
+        "increment": {
+          "label": "ค่าที่เพิ่ม",
+          "help_text": "เฉพาะ Numbering: แต่ละรายการจะเพิ่มค่าครั้งละเท่าไร"
+        },
+        "number_width": {
+          "label": "จำนวนหลัก",
+          "help_text": "เฉพาะ Numbering: จำนวนหลักของเลข เช่น 2 เป็น 01 หรือ 3 เป็น 001"
+        },
+        "number_separator": {
+          "label": "ตัวคั่นเลข",
+          "help_text": "เฉพาะ Numbering: ข้อความคั่นระหว่างลำดับเลขกับชื่อไฟล์",
+          "placeholder": "_"
+        },
+        "reset_per_folder": {
+          "label": "รีเซ็ตต่อโฟลเดอร์",
+          "help_text": "เฉพาะ Numbering: เริ่มนับใหม่ทุกครั้งเมื่อเปลี่ยนโฟลเดอร์"
+        },
+        "target_extensions": {
+          "label": "นามสกุลเป้าหมาย",
+          "help_text": "ใช้ร่วมกัน: ใส่นามสกุลแบบคั่นด้วย comma เช่น .png,.jpg เว้นว่างได้ถ้าต้องการสแกนทุกชนิดไฟล์",
+          "placeholder": ".png,.jpg,.jpeg"
+        }
+      },
+      "choices": {
+        "workflow": {
+          "text_transform": "Text Transform",
+          "trim_delimiter": "Trim by Delimiter",
+          "numbering": "Numbering"
+        },
+        "text_action": {
+          "replace": "แทนที่ข้อความ",
+          "add_prefix": "เพิ่มด้านหน้า",
+          "add_suffix": "เพิ่มด้านท้าย",
+          "remove": "ลบข้อความ"
+        },
+        "match_scope": {
+          "stem": "เฉพาะชื่อไฟล์",
+          "full_name": "รวมส่วนขยาย"
+        },
+        "match_occurrence": {
+          "all": "ทุกตำแหน่ง",
+          "first": "ตำแหน่งแรก",
+          "last": "ตำแหน่งสุดท้าย"
+        },
+        "trim_action": {
+          "keep_before": "เก็บข้อความก่อนตัวคั่น",
+          "keep_after": "เก็บข้อความหลังตัวคั่น",
+          "remove_before": "ลบข้อความก่อนตัวคั่น",
+          "remove_after": "ลบข้อความหลังตัวคั่น"
+        },
+        "delimiter_occurrence": {
+          "first": "ตัวคั่นตัวแรก",
+          "last": "ตัวคั่นตัวสุดท้าย"
+        },
+        "number_action": {
+          "swap_numbers": "สลับตัวเลข",
+          "add_prefix_sequence": "เพิ่มลำดับด้านหน้า",
+          "add_suffix_sequence": "เพิ่มลำดับด้านท้าย",
+          "replace_with_sequence": "แทนชื่อด้วยลำดับ"
+        }
+      }
+    },
+    "filemanage_extension_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "เมื่อเปิดไว้ ระบบจะสแกนทุกโฟลเดอร์ย่อยใน workspace ด้วย"
+        },
+        "old_extension": {
+          "label": "นามสกุลต้นทาง",
+          "help_text": "เลือก .all หากต้องการรวมไฟล์รูปทุกชนิดที่รองรับ หรือเลือกนามสกุลเดียวเพื่อจำกัดเฉพาะไฟล์ต้นทางที่ต้องการ"
+        },
+        "new_extension": {
+          "label": "นามสกุลปลายทาง",
+          "help_text": "เลือกนามสกุลที่จะใช้บันทึกไฟล์รูปหลังแปลงเสร็จ"
+        }
+      },
+      "choices": {
+        "old_extension": {
+          ".all": "All (all image types)",
+          ".png": "PNG",
+          ".jpg": "JPG",
+          ".jpeg": "JPEG",
+          ".webp": "WebP",
+          ".gif": "GIF",
+          ".bmp": "BMP",
+          ".jfif": "JFIF"
+        },
+        "new_extension": {
+          ".png": "PNG",
+          ".jpg": "JPG",
+          ".jpeg": "JPEG",
+          ".webp": "WebP",
+          ".gif": "GIF",
+          ".bmp": "BMP",
+          ".jfif": "JFIF"
+        }
+      }
+    },
+    "filemanage_zip_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "เมื่อเปิดไว้ ระบบจะสแกนหาไฟล์ ZIP ในทุกโฟลเดอร์ย่อยด้วย"
+        },
+        "delete_archives_after_extract": {
+          "label": "ลบไฟล์ ZIP หลังแตกเสร็จ",
+          "help_text": "ลบไฟล์ ZIP ต้นฉบับทันทีหลังจากที่แตกไฟล์เสร็จสมบูรณ์"
+        }
+      }
+    },
+    "filemanage_images_to_pdf_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "ค้นหารูปภาพจากทุกโฟลเดอร์ย่อยเพื่อนำมารวมเป็น PDF"
+        },
+        "image_extensions": {
+          "label": "นามสกุลรูปภาพ",
+          "placeholder": ".png,.jpg,.jpeg,.webp"
+        },
+        "jpg_quality": {
+          "label": "คุณภาพ JPG"
+        },
+        "delete_source_images": {
+          "label": "ลบรูปต้นฉบับ",
+          "help_text": "ลบไฟล์รูปภาพต้นฉบับหลังจากสร้างไฟล์ PDF เสร็จสิ้น"
+        },
+        "fit_to_largest": {
+          "label": "ยึดขนาดตามหน้าที่ใหญ่สุด",
+          "help_text": "ปรับขนาดทุกหน้าใน PDF ให้เท่ากับขนาดของรูปภาพที่ใหญ่ที่สุดในชุด"
+        },
+        "upscale_method": {
+          "label": "วิธีขยายภาพ",
+          "help_text": "เลือกวิธีจัดการเมื่อรูปภาพมีขนาดเล็กกว่าหน้ากระดาษ (ขยายภาพหรือเติมขอบขาว)"
+        }
+      },
+      "choices": {
+        "upscale_method": {
+          "scale": "ขยายให้พอดี",
+          "pad": "เติมพื้นที่ว่าง"
+        }
+      }
+    },
+    "filemanage_pdf_to_images_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "สแกนหาไฟล์ PDF ในทุกโฟลเดอร์ย่อยเพื่อนำมาแปลงเป็นรูปภาพ"
+        },
+        "delete_source_pdfs": {
+          "label": "ลบไฟล์ PDF ต้นฉบับ",
+          "help_text": "ลบไฟล์ PDF ต้นฉบับหลังจากแปลงเป็นรูปภาพเสร็จสิ้น"
+        },
+        "image_format": {
+          "label": "รูปแบบภาพ",
+          "help_text": "เลือกรูปแบบไฟล์รูปภาพที่ต้องการ (JPG หรือ PNG)"
+        },
+        "jpeg_quality": {
+          "label": "คุณภาพ JPEG",
+          "help_text": "กำหนดคุณภาพของไฟล์ JPG (1-100) ค่าที่สูงขึ้นจะได้ภาพที่ชัดแต่ไฟล์จะใหญ่ขึ้น"
+        }
+      },
+      "choices": {
+        "image_format": {
+          "jpg": "JPG",
+          "png": "PNG"
+        }
+      }
+    },
+    "filemanage_webp_to_mp4_form": {
+      "fields": {
+        "output_root": {
+          "label": "โฟลเดอร์ปลายทาง",
+          "help_text": "โฟลเดอร์ปลายทางสำหรับไฟล์ MP4 ที่แปลงแล้ว โดยจะคงโครงสร้างโฟลเดอร์จาก workspace ไว้",
+          "placeholder": "webp-to-mp4-output"
+        },
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย",
+          "help_text": "สแกนหาไฟล์ .webp แบบ recursive เมื่อเปิดใช้งาน"
+        },
+        "overwrite_existing": {
+          "label": "เขียนทับไฟล์เดิม",
+          "help_text": "เขียนทับไฟล์ MP4 ที่มีอยู่ในโฟลเดอร์ปลายทางแทนการข้าม"
+        },
+        "crf": {
+          "label": "CRF",
+          "help_text": "ค่า CRF ยิ่งต่ำคุณภาพยิ่งสูงและไฟล์ยิ่งใหญ่ ค่า 18 คือค่าเริ่มต้นของสคริปต์เดิม"
+        },
+        "preset": {
+          "label": "Preset",
+          "help_text": "ค่าความเร็วในการเข้ารหัสของ FFmpeg ที่ใช้กับ libx264"
+        }
+      },
+      "choices": {
+        "preset": {
+          "ultrafast": "ultrafast",
+          "superfast": "superfast",
+          "veryfast": "veryfast",
+          "faster": "faster",
+          "fast": "fast",
+          "medium": "medium",
+          "slow": "slow",
+          "slower": "slower",
+          "veryslow": "veryslow"
+        }
+      }
+    },
+    "filemanage_fix_jpg_form": {
+      "fields": {
+        "include_subfolders": {
+          "label": "รวมโฟลเดอร์ย่อย"
+        },
+        "order_ascending": {
+          "label": "เรียงจากน้อยไปมาก",
+          "help_text": "กำหนดลำดับที่ใช้เวลาสแกนไฟล์ในงานแก้นามสกุล JPG"
+        },
+        "target_extensions": {
+          "label": "นามสกุลเป้าหมาย",
+          "placeholder": ".png,.jpeg,.webp หรือเว้นว่างเพื่อใช้ทั้งหมด"
+        }
+      }
+    },
+    "filemanage_http_messages": {
+      "method_not_allowed": "ไม่รองรับวิธีเรียกใช้งานนี้",
+      "invalid_data": "ข้อมูลไม่ถูกต้อง",
+      "job_not_found": "ไม่พบงานที่ร้องขอ",
+      "unknown_operation": "ไม่รู้จักงาน FileManage นี้",
+      "unknown_setting_page": "ไม่รู้จักหน้าตั้งค่า FileManage นี้"
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(24rem,0.92fr)]">
+    <section class="panel panel-elevated">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ games_text.header_title }}</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ games_text.header_intro }}</p>
+        </div>
+
+        <div class="panel-body">
+            <form class="grid gap-5" method="post" autocomplete="off" id="games-setting-form">
+                {% csrf_token %}
+                <input type="hidden" name="import_mode" value="{{ import_mode }}" data-import-mode-input>
+
+                {% if scan_form.non_field_errors or manual_form.non_field_errors %}
+                    <ul class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        {% for error in scan_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        {% for error in manual_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="games-import-mode">{{ games_text.add_mode }}</label>
+                    <select class="input" id="games-import-mode" data-import-mode-select>
+                        <option value="scan" {% if import_mode != 'manual' %}selected{% endif %}>{{ games_text.scan_mode }}</option>
+                        <option value="manual" {% if import_mode == 'manual' %}selected{% endif %}>{{ games_text.manual_mode }}</option>
+                    </select>
+                    <div class="text-sm leading-6 text-muted">{{ games_text.add_mode_intro }}</div>
+                </div>
+
+                <div class="grid gap-5 {% if import_mode == 'manual' %}hidden{% endif %}" data-import-mode-panel="scan">
+                    <div class="grid gap-2">
+                        <label class="text-sm font-semibold text-ink" for="{{ scan_form.root_folder.id_for_label }}">{{ games_text.root_path_label }}</label>
+                        {{ scan_form.root_folder }}
+                        {% if scan_form.root_folder.errors %}
+                            <ul class="errorlist">
+                                {% for error in scan_form.root_folder.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="text-sm leading-6 text-muted">{{ games_text.root_path_intro }}</div>
+                    </div>
+
+                    <label class="file-checkbox-row" for="{{ scan_form.skip_existing.id_for_label }}">
+                        <span class="flex items-start gap-3">
+                            {{ scan_form.skip_existing }}
+                            <span class="grid gap-1">
+                                <span class="text-sm font-semibold text-ink">{{ games_text.skip_existing_title }}</span>
+                                <span class="text-sm leading-6 text-muted">{{ games_text.skip_existing_intro }}</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="grid gap-5 {% if import_mode != 'manual' %}hidden{% endif %}" data-import-mode-panel="manual">
+                    <div class="grid gap-2">
+                        <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_kind.id_for_label }}">{{ games_text.entry_type }}</label>
+                        {{ manual_form.manual_kind }}
+                        {% if manual_form.manual_kind.errors %}
+                            <ul class="errorlist">
+                                {% for error in manual_form.manual_kind.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="grid gap-2 {% if manual_form.manual_kind.value != 'subfolder' %}hidden{% endif %}" data-manual-parent-row>
+                        <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_parent_game.id_for_label }}">{{ games_text.parent_root_game }}</label>
+                        {{ manual_form.manual_parent_game }}
+                        {% if manual_form.manual_parent_game.errors %}
+                            <ul class="errorlist">
+                                {% for error in manual_form.manual_parent_game.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="text-sm leading-6 text-muted">{{ games_text.parent_root_intro }}</div>
+                    </div>
+
+                    <div class="grid gap-3 md:grid-cols-2">
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_title.id_for_label }}">{{ games_text.display_title }}</label>
+                            {{ manual_form.manual_title }}
+                            {% if manual_form.manual_title.errors %}
+                                <ul class="errorlist">
+                                    {% for error in manual_form.manual_title.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_folder_name.id_for_label }}">{{ games_text.folder_name }}</label>
+                            {{ manual_form.manual_folder_name }}
+                            {% if manual_form.manual_folder_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in manual_form.manual_folder_name.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <label class="file-checkbox-row" for="{{ manual_form.manual_use_folder_name_as_filename.id_for_label }}">
+                        <span class="flex items-start gap-3">
+                            {{ manual_form.manual_use_folder_name_as_filename }}
+                            <span class="grid gap-1">
+                                <span class="text-sm font-semibold text-ink">{{ games_text.use_folder_name_title }}</span>
+                                <span class="text-sm leading-6 text-muted">{{ games_text.use_folder_name_intro }}</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <button class="btn-secondary" type="submit" name="action" value="preview">{{ games_text.preview_button }}</button>
+                    <button class="btn-secondary" type="submit" name="action" value="clear">{{ games_text.clear_button }}</button>
+                    {% if preview_payload %}
+                        <button class="btn-primary" type="submit" name="action" value="save" {% if preview_payload.rows|length == 0 %}disabled aria-disabled="true" title="{{ games_text.no_items_to_save }}"{% endif %}>{{ games_text.save_button }}</button>
+                        <input type="hidden" name="preview_import_mode" value="{{ preview_payload.import_mode|default:import_mode }}">
+                        <input type="hidden" name="preview_root_path" value="{{ preview_payload.root_path }}">
+                        <input type="hidden" name="preview_skip_existing" value="{% if preview_payload.skip_existing %}1{% else %}0{% endif %}">
+                    {% endif %}
+                </div>
+
+                {% if preview_payload %}
+                    <div class="game-preview-shell">
+                        <div class="game-preview-header">
+                            <div class="space-y-1">
+                                <div class="section-kicker">{{ games_text.preview_kicker }}</div>
+                                <h3 class="text-xl font-semibold tracking-tight text-ink">{{ games_text.items_ready }}</h3>
+                            </div>
+                            <div class="metric-pill min-w-[8rem]">
+                                <div class="text-3xl font-semibold tracking-tight text-ink">{{ preview_payload.rows|length }}</div>
+                                <div class="mt-1 text-xs uppercase tracking-[0.22em] text-muted">{{ games_text.items }}</div>
+                            </div>
+                        </div>
+
+                        <div class="game-preview-meta-grid">
+                            <div class="game-preview-meta-card lg:col-span-2">
+                                <div class="game-preview-meta-label">{{ games_text.source_folder }}</div>
+                                <div class="game-preview-meta-value"><code>{{ preview_payload.root_path }}</code></div>
+                            </div>
+                            <div class="game-preview-meta-card">
+                                <div class="game-preview-meta-label">{{ games_text.root_games_found }}</div>
+                                <div class="game-preview-meta-value">{{ preview_payload.root_game_count }}</div>
+                            </div>
+                        </div>
+
+                        <div class="grid gap-3">
+                            {% for row in preview_payload.rows %}
+                                <div class="helper-card rounded-[1.8rem] p-4 md:p-5" data-game-preview-row>
+                                    <input type="hidden" name="row_index" value="{{ forloop.counter0 }}">
+                                    <input type="hidden" name="row_active_{{ forloop.counter0 }}" value="1" data-row-active>
+                                    <input type="hidden" name="row_game_id_{{ forloop.counter0 }}" value="{{ row.game_id }}">
+                                    <input type="hidden" name="row_parent_index_{{ forloop.counter0 }}" value="{{ row.parent_index }}">
+                                    <input type="hidden" name="row_parent_game_id_{{ forloop.counter0 }}" value="{{ row.parent_game_id }}">
+                                    <input type="hidden" name="row_kind_{{ forloop.counter0 }}" value="{{ row.kind }}">
+
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="min-w-0 space-y-2">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span class="game-type-badge {% if row.kind == 'root' %}game-type-badge-root{% else %}game-type-badge-sub{% endif %}">{% if row.kind == 'root' %}{{ games_text.root }}{% else %}{{ games_text.subfolder }}{% endif %}</span>
+                                                <span class="game-status-badge {% if row.exists %}game-status-badge-existing{% else %}game-status-badge-new{% endif %}">{{ row.status_label|default:row.status }}</span>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="truncate text-base font-semibold text-ink">{{ row.display_path }}</div>
+                                                {% if row.parent_title %}
+                                                    <div class="mt-1 text-xs leading-5 text-muted">{{ games_text.inside }} {{ row.parent_title }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <button class="character-preview-remove-btn shrink-0" type="button" data-remove-game-row aria-label="{{ games_text.remove_preview_row }}">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M9.5 9.5l5 5"></path>
+                                                <path d="M14.5 9.5l-5 5"></path>
+                                                <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-4 grid gap-3 md:grid-cols-2">
+                                        <label class="grid gap-1.5 min-w-0">
+                                            <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ games_text.display_title }}</span>
+                                            <input class="input !py-2.5" id="row_title_{{ forloop.counter0 }}" type="text" name="row_title_{{ forloop.counter0 }}" value="{{ row.title }}">
+                                        </label>
+                                        <label class="grid gap-1.5 min-w-0">
+                                            <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ games_text.folder_name }}</span>
+                                            <input class="input !py-2.5" id="row_folder_name_{{ forloop.counter0 }}" type="text" name="row_folder_name_{{ forloop.counter0 }}" value="{{ row.folder_name }}">
+                                        </label>
+                                    </div>
+
+                                    <label class="mt-3 flex items-center gap-3 rounded-[1.2rem] bg-white/65 px-3.5 py-3 shadow-[var(--shadow-soft)]" for="row_use_folder_name_{{ forloop.counter0 }}">
+                                        <input class="h-4 w-4 rounded border-line text-warm focus:ring-warm/40" id="row_use_folder_name_{{ forloop.counter0 }}" type="checkbox" name="row_use_folder_name_{{ forloop.counter0 }}" value="1" {% if row.use_folder_name_as_filename %}checked{% endif %}>
+                                        <span class="min-w-0">
+                                            <span class="block text-sm font-semibold text-ink">{{ games_text.use_folder_name_title }}</span>
+                                            <span class="block text-xs leading-5 text-muted">{{ games_text.use_folder_name_intro }}</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </section>
+
+    <aside class="grid gap-6">
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <div class="section-kicker">{{ games_text.library }}</div>
+                        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-ink">{{ games_text.saved_games }}</h2>
+                    </div>
+                    <div class="game-list-summary">
+                        <div>
+                            <span class="text-2xl font-semibold tracking-tight text-ink">{{ saved_root_count }}</span>
+                            <span class="text-sm text-muted">{{ games_text.root_short }}</span>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-semibold tracking-tight text-ink">{{ saved_subfolder_count }}</span>
+                            <span class="text-sm text-muted">{{ games_text.sub_short }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body grid gap-3">
+                {% if saved_games %}
+                    <div class="custom-scrollbar grid max-h-[36rem] gap-3 overflow-y-auto pr-2">
+                        {% for group in saved_game_groups %}
+                            <section class="saved-character-group-card">
+                                <div class="saved-character-group-bar">
+                                    <div class="saved-character-group-copy">
+                                        <div class="saved-character-group-dot"></div>
+                                        <div class="min-w-0">
+                                            <div class="truncate text-sm font-semibold text-ink">{{ group.game.display_path }}</div>
+                                            <div class="text-xs leading-5 text-muted">
+                                                {{ group.count }} {{ games_text.entries_word }}{% if group.subfolder_count %} | {{ group.subfolder_count }} {{ games_text.subfolders_word }}{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="saved-character-group-view-btn" type="button" data-saved-game-group-view data-group-id="{{ group.game.id }}" data-group-label="{{ group.game.display_path|escape }}" data-group-count="{{ group.count }}" data-template-id="saved-game-group-template-{{ group.game.id }}" aria-label="{{ games_text.saved_games }}">
+                                        <svg class="saved-character-group-view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </section>
+                            <template id="saved-game-group-template-{{ group.game.id }}">
+                                <div class="saved-character-list-modal-grid">
+                                    {% for entry in group.entries %}
+                                        <div class="saved-character-row">
+                                            <div class="character-tree-entry">
+                                                <div class="character-tree-thumb character-tree-thumb-empty">
+                                                    {% if entry.is_root %}{{ games_text.root_short|upper }}{% else %}{{ games_text.sub_short|upper }}{% endif %}
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <div class="flex flex-wrap items-center gap-2">
+                                                        <div class="truncate text-sm font-semibold text-ink">{{ entry.game.display_path }}</div>
+                                                        <span class="game-type-badge {% if entry.is_root %}game-type-badge-root{% else %}game-type-badge-sub{% endif %}">{% if entry.is_root %}{{ games_text.root }}{% else %}{{ games_text.subfolder }}{% endif %}</span>
+                                                        {% if entry.game.use_folder_name_as_filename %}
+                                                            <span class="game-status-badge game-status-badge-existing">{{ games_text.use_folder_name_short }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="text-xs leading-5 text-muted">{{ games_text.display_prefix }}: {{ entry.game.title }} | {{ games_text.folder_prefix }}: {{ entry.game.resolved_folder_name }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="saved-game-tree-actions">
+                                                <button class="tree-action-btn" type="button" data-edit-trigger data-game-id="{{ entry.game.id }}" data-game-label="{{ entry.game.display_path|escape }}" data-title="{{ entry.game.title|escape }}" data-folder-name="{{ entry.game.folder_name|escape }}" data-use-folder-name="{% if entry.game.use_folder_name_as_filename %}1{% else %}0{% endif %}">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M12 20h9"></path>
+                                                        <path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button class="tree-action-btn tree-action-btn-danger" type="button" data-delete-trigger data-game-id="{{ entry.game.id }}" data-game-label="{{ entry.game.display_path|escape }}">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M8 6V4h8v2"></path>
+                                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                                        <path d="M10 11v6"></path>
+                                                        <path d="M14 11v6"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </template>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">{{ games_text.saved_games_empty }}</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ games_text.what_happens_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ games_text.what_happens_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for step in games_text.workflow_steps %}
+                        <p><strong class="font-semibold text-ink">{{ forloop.counter }}.</strong> {{ step }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<form method="post" class="hidden" data-game-delete-form>
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete_saved">
+    <input type="hidden" name="game_id" value="" data-game-delete-id>
+</form>
+
+<div class="character-list-modal-overlay hidden" data-saved-game-list-modal>
+    <div class="confirm-modal-card saved-character-modal-card">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <div class="section-kicker">{{ games_text.library }}</div>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink" data-saved-game-list-title>{{ games_text.saved_games }}</h3>
+                <p class="mt-2 text-sm leading-6 text-muted" data-saved-game-list-subtitle></p>
+            </div>
+            <button class="modal-close-button" type="button" data-saved-game-list-close aria-label="{{ games_text.close_saved_games_modal }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="saved-character-list-modal custom-scrollbar" data-saved-game-list-body></div>
+    </div>
+</div>
+
+<div class="confirm-modal-overlay hidden" data-confirm-modal>
+    <div class="confirm-modal-card saved-character-child-card">
+        <div class="section-kicker">{{ games_text.confirm }}</div>
+        <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{{ games_text.delete_game_entry }}</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">{{ games_text.delete_game_intro }}</p>
+        <div class="confirm-modal-target" data-confirm-target></div>
+        <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button class="btn-secondary" type="button" data-confirm-cancel>{{ games_text.cancel }}</button>
+            <button class="saved-game-delete-btn" type="button" data-confirm-submit>{{ games_text.delete_entry }}</button>
+        </div>
+    </div>
+</div>
+
+<div class="confirm-modal-overlay hidden" data-edit-modal>
+    <div class="confirm-modal-card saved-character-child-card">
+        <div class="section-kicker">{{ games_text.edit }}</div>
+        <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{{ games_text.edit_game_entry }}</h3>
+        <p class="mt-3 text-sm leading-6 text-muted" data-edit-target></p>
+        <form class="mt-5 grid gap-4" method="post" data-edit-form>
+            {% csrf_token %}
+            <input type="hidden" name="game_id" data-edit-game-id>
+            <div class="grid gap-2">
+                <label class="text-sm font-semibold text-ink" for="edit-game-title">{{ games_text.display_title }}</label>
+                <input class="input" id="edit-game-title" name="saved_title" type="text" data-edit-title>
+            </div>
+            <div class="grid gap-2">
+                <label class="text-sm font-semibold text-ink" for="edit-game-folder">{{ games_text.folder_name }}</label>
+                <input class="input" id="edit-game-folder" name="saved_folder_name" type="text" data-edit-folder-name>
+            </div>
+            <label class="file-checkbox-row" for="saved_use_folder_name_as_filename">
+                <span class="flex items-start gap-3">
+                    <input class="h-5 w-5 rounded border-line text-warm focus:ring-warm/40" id="saved_use_folder_name_as_filename" name="saved_use_folder_name_as_filename" type="checkbox" value="1" data-edit-use-folder-name>
+                    <span class="grid gap-1">
+                        <span class="text-sm font-semibold text-ink">{{ games_text.use_folder_name_title }}</span>
+                        <span class="text-sm leading-6 text-muted">{{ games_text.use_folder_name_intro }}</span>
+                    </span>
+                </span>
+            </label>
+            <div class="flex flex-wrap justify-end gap-3 pt-2">
+                <button class="btn-secondary" type="button" data-edit-cancel>{{ games_text.cancel }}</button>
+                <button class="btn-primary" type="submit" name="action" value="update_saved">{{ games_text.save_changes }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script id="games-setting-js-config" type="application/json">{"manualKindSelectId":"{{ manual_form.manual_kind.id_for_label|escapejs }}","currentGroupId":{% if open_saved_group_id %}{{ open_saved_group_id }}{% else %}null{% endif %},"savedGamesTitle":"{{ games_text.saved_games|escapejs }}","entriesSuffix":"{{ games_text.entries_word|escapejs }}"}</script>
+<script src="{% static 'catalog/js/games_setting.js' %}"></script>
+{% endblock %}

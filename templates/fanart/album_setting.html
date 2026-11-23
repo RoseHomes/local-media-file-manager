@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(21rem,0.85fr)]">
+    <section class="panel">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ album_setting_text.section_title }}</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ album_setting_text.section_intro }}</p>
+        </div>
+        <div class="panel-body">
+            <form class="grid gap-5" method="post" id="album-setting-form" autocomplete="off">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <ul class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="grid gap-3" id="album-path-list">
+                    {% for row in album_rows %}
+                        <div class="helper-card rounded-[1.8rem] p-4 md:p-5 album-setting-row" data-album-setting-row>
+                            <input type="hidden" name="album_row_id" value="{{ row.row_id }}" data-row-id-field>
+
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <span class="section-kicker shrink-0">{{ album_setting_text.album_label }}</span>
+                                    <div class="truncate text-base font-semibold text-ink" data-album-row-title>
+                                        {% if row.path %}{{ row.path }}{% else %}{{ album_setting_text.empty_row_title }}{% endif %}
+                                    </div>
+                                </div>
+                                <button class="character-preview-remove-btn shrink-0" type="button" data-remove-path aria-label="{{ album_setting_text.remove_path_aria }}">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M9.5 9.5l5 5"></path>
+                                        <path d="M14.5 9.5l-5 5"></path>
+                                        <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="mt-4 grid gap-3 md:grid-cols-2">
+                                <label class="grid gap-1.5 min-w-0">
+                                    <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ album_setting_text.path_label }}</span>
+                                    <input class="input !py-2.5" id="album_path_{{ row.row_id }}" type="text" name="album_path_{{ row.row_id }}" value="{{ row.path }}" placeholder="{{ album_setting_text.placeholder }}">
+                                </label>
+                                <label class="grid gap-1.5 min-w-0">
+                                    <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ album_setting_text.root_game_label }}</span>
+                                    <select class="input !py-2.5 min-w-0" id="album_root_game_{{ row.row_id }}" name="album_root_game_{{ row.row_id }}" data-rich-clearable="true">
+                                        <option value="">{{ album_setting_text.root_game_placeholder }}</option>
+                                        {% for game in form.root_games %}
+                                            <option value="{{ game.id }}" {% if row.root_game_id == game.id|stringformat:"s" %}selected{% endif %}>{{ game.display_path }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                            </div>
+
+                            <label class="mt-3 flex items-start gap-3 rounded-[1.2rem] bg-white/65 px-3.5 py-3 shadow-[var(--shadow-soft)]" for="album_follow_sub_from_url_{{ row.row_id }}">
+                                <input class="mt-1 h-4 w-4 rounded border-line text-warm focus:ring-warm/40" id="album_follow_sub_from_url_{{ row.row_id }}" type="checkbox" name="album_follow_sub_from_url_{{ row.row_id }}" value="1" {% if row.follow_subfolder_from_url %}checked{% endif %}>
+                                <span class="min-w-0">
+                                    <span class="block text-sm font-semibold text-ink">{{ album_setting_text.follow_sub_from_url_label }}</span>
+                                    <span class="block text-xs leading-5 text-muted">{{ album_setting_text.follow_sub_from_url_intro }}</span>
+                                </span>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if not form.root_games %}
+                    <div class="empty-state !px-4 !py-6 text-sm">{{ album_setting_text.no_root_games }}</div>
+                {% endif %}
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="{{ form.default_sort.id_for_label }}">{{ album_setting_text.default_sort_label }}</label>
+                    {{ form.default_sort }}
+                    <div class="text-sm leading-6 text-muted">{{ album_setting_text.default_sort_intro }}</div>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <button class="btn-secondary" type="button" id="add-album-path">{{ album_setting_text.add_path }}</button>
+                    <button class="btn-primary" type="submit">{{ album_setting_text.save_paths }}</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <aside class="grid gap-6">
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ album_setting_text.configured_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ album_setting_text.configured_intro }}</p>
+            </div>
+            <div class="panel-body grid gap-4">
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ configured_rows|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ album_setting_text.saved_roots }}</div>
+                </div>
+                {% if configured_rows %}
+                    {% for row in configured_rows %}
+                        <div class="helper-card">
+                            <div class="grid gap-2 text-sm leading-6">
+                                <div><strong class="font-semibold text-ink">{{ album_setting_text.configured_path_label }}:</strong> <code class="break-all text-ink">{{ row.path }}</code></div>
+                                <div><strong class="font-semibold text-ink">{{ album_setting_text.configured_game_label }}:</strong> <span class="text-ink">{{ row.root_game_label }}</span></div>
+                                <div><strong class="font-semibold text-ink">{{ album_setting_text.configured_mode_label }}:</strong> <span class="text-ink">{% if row.follow_subfolder_from_url %}{{ album_setting_text.mode_follow_subfolder }}{% else %}{{ album_setting_text.mode_root_only }}{% endif %}</span></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state !px-4 !py-6 text-sm">{{ album_setting_text.no_paths }}</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ album_setting_text.how_it_works_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ album_setting_text.how_it_works_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for step in album_setting_text.steps %}
+                        <p><strong class="font-semibold text-ink">{{ forloop.counter }}.</strong> {{ step }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<template id="album-path-template">
+    <div class="helper-card rounded-[1.8rem] p-4 md:p-5 album-setting-row" data-album-setting-row>
+        <input type="hidden" name="album_row_id" value="__ROW_ID__" data-row-id-field>
+
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <span class="section-kicker shrink-0">{{ album_setting_text.album_label }}</span>
+                <div class="truncate text-base font-semibold text-ink" data-album-row-title>{{ album_setting_text.empty_row_title }}</div>
+            </div>
+            <button class="character-preview-remove-btn shrink-0" type="button" data-remove-path aria-label="{{ album_setting_text.remove_path_aria }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9.5 9.5l5 5"></path>
+                    <path d="M14.5 9.5l-5 5"></path>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="mt-4 grid gap-3 md:grid-cols-2">
+            <label class="grid gap-1.5 min-w-0">
+                <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ album_setting_text.path_label }}</span>
+                <input class="input !py-2.5" id="album_path___ROW_ID__" type="text" name="album_path___ROW_ID__" value="" placeholder="{{ album_setting_text.placeholder }}">
+            </label>
+            <label class="grid gap-1.5 min-w-0">
+                <span class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted">{{ album_setting_text.root_game_label }}</span>
+                <select class="input !py-2.5 min-w-0" id="album_root_game___ROW_ID__" name="album_root_game___ROW_ID__" data-rich-clearable="true">
+                    <option value="">{{ album_setting_text.root_game_placeholder }}</option>
+                    {% for game in form.root_games %}
+                        <option value="{{ game.id }}">{{ game.display_path }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+
+        <label class="mt-3 flex items-start gap-3 rounded-[1.2rem] bg-white/65 px-3.5 py-3 shadow-[var(--shadow-soft)]" for="album_follow_sub_from_url___ROW_ID__">
+            <input class="mt-1 h-4 w-4 rounded border-line text-warm focus:ring-warm/40" id="album_follow_sub_from_url___ROW_ID__" type="checkbox" name="album_follow_sub_from_url___ROW_ID__" value="1">
+            <span class="min-w-0">
+                <span class="block text-sm font-semibold text-ink">{{ album_setting_text.follow_sub_from_url_label }}</span>
+                <span class="block text-xs leading-5 text-muted">{{ album_setting_text.follow_sub_from_url_intro }}</span>
+            </span>
+        </label>
+    </div>
+</template>
+
+<div class="confirm-modal-overlay hidden" id="album-path-delete-modal" aria-hidden="true">
+    <div class="confirm-modal-card max-w-xl">
+        <div class="text-xs font-semibold uppercase tracking-[0.24em] text-warm">{{ album_setting_text.confirm_kicker }}</div>
+        <h2 class="mt-3 text-3xl font-semibold tracking-tight text-ink">{{ album_setting_text.delete_confirm_title }}</h2>
+        <p class="mt-4 text-sm leading-6 text-muted">{{ album_setting_text.delete_confirm_copy }}</p>
+        <div class="confirm-modal-target" id="album-path-delete-modal-target"></div>
+        <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button class="btn-secondary !px-5 !py-3" id="album-path-delete-modal-cancel" type="button">{{ album_setting_text.delete_confirm_cancel }}</button>
+            <button class="btn-primary !px-5 !py-3" id="album-path-delete-modal-confirm" type="button">{{ album_setting_text.delete_confirm_button }}</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script id="album-setting-js-config" type="application/json">{"emptyRowTitle":"{{ album_setting_text.empty_row_title|escapejs }}"}</script>
+<script src="{% static 'fanart/js/album_setting.js' %}"></script>
+{% endblock %}

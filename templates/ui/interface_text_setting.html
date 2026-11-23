@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'ui/css/interface_text_setting.css' %}">
+{% endblock %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(22rem,0.85fr)]">
+    <div class="grid gap-6">
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ interface_text.section_title }}</h2>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ interface_text.section_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <form id="ui-settings-form" class="grid gap-5" method="post">
+                    {% csrf_token %}
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ form.language_mode.id_for_label }}">{{ interface_text.display_mode }}</label>
+                            {{ form.language_mode }}
+                            {% if form.language_mode.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form.language_mode.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ form.theme_name.id_for_label }}">{{ interface_text.theme_label }}</label>
+                            {{ form.theme_name }}
+                            {% if form.theme_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form.theme_name.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {{ form.menu_config }}
+                    {% if form.menu_config.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.menu_config.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <section class="menu-order-entry" aria-labelledby="menu-order-entry-title">
+                        <div class="menu-order-entry-copy">
+                            <div class="menu-order-entry-kicker">{{ page_kicker }}</div>
+                            <h3 id="menu-order-entry-title" class="menu-order-entry-title">{{ interface_text.menu_order_title }}</h3>
+                            <p class="menu-order-entry-intro">{{ interface_text.menu_order_intro }}</p>
+                        </div>
+                        <div class="menu-order-entry-preview" data-menu-order-preview aria-hidden="true">
+                            {% for group in ui.menu_config %}
+                                <div class="menu-order-preview-chip">
+                                    <span class="menu-order-preview-dot"></span>
+                                    <span class="menu-order-preview-label">{{ group.label }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="menu-order-entry-actions">
+                            <button class="btn-secondary menu-order-entry-button" type="button" data-menu-order-open>
+                                {{ interface_text.menu_order_open }}
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="mt-8 flex items-center gap-4 border-t border-muted/10 pt-6">
+                        <button class="btn-primary" type="submit">{{ interface_text.save_settings }}</button>
+                        <button class="btn-secondary" type="button" onclick="window.location.reload();">{{ interface_text.reset_settings }}</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <aside class="grid gap-6 self-start">
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ interface_text.current_setup_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ interface_text.current_setup_intro }}</p>
+            </div>
+            <div class="panel-body grid gap-4">
+                <div class="stat-card">
+                    <div class="text-2xl font-semibold tracking-tight text-ink">{{ current_mode_label }}</div>
+                    <div class="mt-1 text-xs font-bold uppercase tracking-wider text-muted opacity-80">{{ interface_text.active_display_mode }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-2xl font-semibold tracking-tight text-ink">{{ current_theme_label }}</div>
+                    <div class="mt-1 text-xs font-bold uppercase tracking-wider text-muted opacity-80">{{ interface_text.active_theme }}</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ interface_text.display_modes_title }}</h2>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for item in interface_text.display_modes %}
+                        <p><strong class="font-semibold text-ink">{{ item.title }}</strong>: {{ item.body }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ interface_text.themes_title }}</h2>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for item in interface_text.themes %}
+                        <p><strong class="font-semibold text-ink">{{ item.title }}</strong>: {{ item.body }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<div class="character-list-modal-overlay hidden" data-menu-order-modal>
+    <div class="confirm-modal-card saved-character-modal-card menu-order-modal-card">
+        <div class="menu-order-modal-hero">
+            <div class="menu-order-modal-hero-copy">
+                <div class="menu-order-modal-kicker">{{ page_kicker }}</div>
+                <h3 class="menu-order-modal-title">{{ interface_text.menu_order_title }}</h3>
+                <p class="menu-order-modal-intro">{{ interface_text.menu_order_intro }}</p>
+            </div>
+            <button class="modal-close-button" type="button" data-menu-order-close aria-label="{{ interface_text.close_menu_order_modal }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="menu-order-modal-body">
+            <div id="menu-ordering-grid" class="custom-scrollbar menu-ordering-board" role="list">
+                {% for group in ui.menu_config %}
+                <section class="menu-group-block menu-order-group" data-group-id="{{ group.id }}" draggable="true">
+                    <div class="group-drag-handle menu-order-group-header">
+                        <div class="menu-order-group-heading">
+                            <span class="menu-order-group-marker"></span>
+                            <span class="menu-order-group-title">{{ group.label }}</span>
+                        </div>
+                        <div class="menu-order-group-meta">
+                            <span class="menu-order-group-count">{{ group.items|length }}</span>
+                            <div class="menu-order-grip" aria-hidden="true">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="menu-item-list menu-order-item-list" data-group-id="{{ group.id }}">
+                        {% for item in group.items %}
+                        <li class="menu-item-node menu-order-item" data-item-id="{{ item.id }}" draggable="true">
+                            <div class="menu-order-item-main">
+                                <span class="menu-order-item-icon-wrap">
+                                    <span class="menu-dot menu-order-item-icon" aria-hidden="true" style="margin: 0; opacity: 1;"></span>
+                                </span>
+                                <span class="menu-order-item-label">{{ item.label }}</span>
+                            </div>
+                            <div class="menu-order-item-grip" aria-hidden="true">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="menu-order-modal-footer">
+            <button class="btn-secondary menu-order-modal-button" type="button" data-menu-order-close>
+                {{ interface_text.close_menu_order }}
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'ui/js/interface_text_setting.js' %}"></script>
+{% endblock %}

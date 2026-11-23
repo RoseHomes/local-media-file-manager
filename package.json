@@ -1,0 +1,12 @@
+{
+  "name": "local-media-file-manager",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/shared/src/input.css -o ./static/shared/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./static/shared/src/input.css -o ./static/shared/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.5",
+    "tailwindcss": "4.3.5"
+  }
+}

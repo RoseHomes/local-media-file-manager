@@ -1,0 +1,48 @@
+﻿{
+  "page_ui": {
+    "fanart_setting_form": {
+      "fields": {
+        "source_folder": {
+          "placeholder": "workspace/inbox",
+          "error_messages": {
+            "required": "Enter a source folder."
+          }
+        },
+        "destination_folder": {
+          "placeholder": "workspace/library",
+          "error_messages": {
+            "required": "Enter a destination root folder."
+          }
+        },
+        "filename_separator": {
+          "placeholder": "Leave blank for no separator"
+        },
+        "date_format_pattern": {
+          "placeholder": "YYYYMMDD",
+          "error_messages": {
+            "required": "Enter a date format."
+          }
+        },
+        "sequence_padding": {
+          "error_messages": {
+            "required": "Enter a sequence digit count."
+          }
+        }
+      },
+      "messages": {
+        "blank_date_format": "Date format cannot be blank.",
+        "invalid_date_format": "Use only DD, MM, YYYY, YY and optional separators like -, _, or .",
+        "invalid_sequence_padding": "Sequence padding must be between 1 and 9."
+      }
+    },
+    "fanart_http_messages": {
+      "file_outside_inbox": "File is outside the inbox.",
+      "file_not_found": "File not found.",
+      "preview_not_found": "Preview not found.",
+      "album_file_invalid": "Album file is invalid.",
+      "album_file_not_found": "Album file not found.",
+      "album_preview_invalid": "Album preview is invalid.",
+      "album_preview_not_found": "Album preview not found."
+    }
+  }
+}

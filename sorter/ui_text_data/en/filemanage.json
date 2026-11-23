@@ -1,0 +1,67 @@
+{
+  "filemanage_run_buttons": {
+    "rename-files": "Run Rename Files",
+    "change-file-extension": "Run Change File Extension",
+    "extract-zip": "Run Extract ZIP",
+    "images-to-pdf": "Run Images To PDF",
+    "pdf-to-images": "Run PDF To Images",
+    "webp-to-mp4": "Run WebP To MP4"
+  },
+  "filemanage_setting_helpers": {
+    "workspace": {
+      "title": "How It Works",
+      "lines": [
+        "Set one workspace root here for every FileManage operation.",
+        "The operation pages preview what will happen inside this root before you run anything.",
+        "You can still tune each tool separately from its own settings page."
+      ]
+    },
+    "rename": {
+      "title": "Rename Workflows",
+      "lines": [
+        "Text Transform replaces text, adds prefixes or suffixes, removes matched text, and still supports per-folder alphabet mode.",
+        "Trim by Delimiter keeps or removes the part of a filename around a delimiter like _, -, (, or [.",
+        "Numbering can swap existing number blocks or add a numbered prefix or suffix before you run the preview."
+      ]
+    },
+    "extension": {
+      "title": "Extension Workflow",
+      "lines": [
+        "Use the Source Extension dropdown to convert one image type only, or choose .all to include every supported image type in the workspace.",
+        "The .all option includes .png, .jpg, .jpeg, .webp, .gif, .bmp, and .jfif files.",
+        "The conversion run writes a new file in the selected target extension and removes the old file only after the save succeeds."
+      ]
+    },
+    "zip": {
+      "title": "Archive Notes",
+      "lines": [
+        "Each ZIP archive is expanded into a folder with the same base name.",
+        "You can keep the source ZIP files or delete them after extraction completes."
+      ]
+    },
+    "images-to-pdf": {
+      "title": "PDF Build Notes",
+      "lines": [
+        "Folders with matching images become PDF outputs named after that folder.",
+        "The fit options let you scale or pad images to match the largest page size in the set."
+      ]
+    },
+    "pdf-to-images": {
+      "title": "PDF Export Notes",
+      "lines": [
+        "Each PDF becomes a sibling folder named after the source file.",
+        "The page images are written in order so the preview page stays aligned with the run result."
+      ]
+    },
+    "webp-to-mp4": {
+      "title": "Video Conversion Notes",
+      "lines": [
+        "The current FileManage workspace acts as the source root for all .webp files.",
+        "Converted MP4 files are written under the output root while mirroring the workspace folder structure.",
+        "Animated WebP files are rebuilt from frames so their timing stays close to the original source."
+      ]
+    }
+  }
+}
+
+

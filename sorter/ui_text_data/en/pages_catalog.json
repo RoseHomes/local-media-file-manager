@@ -1,0 +1,14 @@
+{
+  "pages": {
+    "games_setting": {
+      "kicker": "Fanart Workflow",
+      "title": "Games Setting",
+      "intro": "Scan a game library root, preview which folders become root games and game subfolders, then save them into master data."
+    },
+    "character_setting": {
+      "kicker": "Fanart Workflow",
+      "title": "Character Setting",
+      "intro": "Scan game folders that contain character folders and reference images, preview the result, edit names, remove rows, and then save."
+    }
+  }
+}

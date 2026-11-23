@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'fanart/css/workspace.css' %}">
+{% endblock %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block hero_actions %}
+<form action="{% url 'clear_preview_cache' %}" method="post">
+    {% csrf_token %}
+    <button class="btn-secondary" type="submit">{{ workspace_text.clear_preview_cache }}</button>
+</form>
+<form action="{% url 'process_staging' %}" method="post">
+    {% csrf_token %}
+    <button class="btn-primary" type="submit">{{ workspace_text.process_queue }}</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<form id="stage-form" action="{% url 'stage_selection' %}" method="post">
+    {% csrf_token %}
+</form>
+
+<div class="grid gap-6 lg:grid-cols-12">
+    <section class="panel panel-elevated flex min-h-[calc(100vh-7rem)] flex-col lg:col-span-8 xl:col-span-8">
+        <div class="panel-header">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ workspace_text.inbox_title }}</h2>
+                    <p class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.inbox_intro }}</p>
+                </div>
+                <div class="metric-pill min-w-[9rem]">
+                    <div class="text-3xl font-semibold tracking-tight text-ink" id="visible-images-count">{{ images|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.visible_images }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body flex min-h-0 flex-1 flex-col">
+            <div class="toolbar-shell">
+                <div class="grid gap-3 lg:flex lg:items-center">
+                    <input class="input lg:flex-1" id="gallery-filter" type="search" placeholder="{{ workspace_text.filter_visible_files }}">
+                    <select class="lg:w-[14rem] lg:shrink-0" id="sort-select" data-rich-search="false">
+                        <option value="date_desc">{{ workspace_text.sort_date_desc }}</option>
+                        <option value="date_asc">{{ workspace_text.sort_date_asc }}</option>
+                        <option value="name_asc">{{ workspace_text.sort_name_asc }}</option>
+                        <option value="name_desc">{{ workspace_text.sort_name_desc }}</option>
+                    </select>
+                    <button class="btn-secondary lg:shrink-0" id="clear-selected" type="button">{{ workspace_text.clear_selected }}</button>
+                    <div class="text-sm text-muted lg:ml-auto lg:shrink-0"><span id="selected-count">0</span> {{ workspace_text.selected_suffix }}</div>
+                </div>
+            </div>
+
+            <div class="custom-scrollbar mt-4 max-h-[calc(100vh-11rem)] flex-1 overflow-y-auto pr-2 pb-6" id="gallery-shell">
+                <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4 {% if not images %}hidden{% endif %}" id="gallery">
+                    {% for image in images %}
+                        <label class="gallery-card group cursor-pointer" data-gallery-card data-file-name="{{ image.file_name|lower }}" data-created="{{ image.created_at|date:'U' }}">
+                            <span class="gallery-media block">
+                                <input class="gallery-check" type="checkbox" name="selected_images" value="{{ image.relative_path }}" form="stage-form">
+                                <img class="gallery-image" src="{{ image.preview_url }}" alt="{{ image.file_name }}" loading="lazy" decoding="async" fetchpriority="low">
+                            </span>
+                            <span class="block space-y-2 px-4 py-3">
+                                <span class="block break-all text-base font-semibold leading-6 text-ink">{{ image.file_name }}</span>
+                                <span class="block text-sm text-muted">{{ image.created_at|date:'d/m/Y H:i' }}</span>
+                            </span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="empty-state {% if images %}hidden{% endif %}" id="gallery-empty-state">{{ workspace_text.inbox_empty }}</div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="panel panel-elevated overflow-visible lg:col-span-4 lg:sticky lg:top-5 lg:self-start xl:col-span-4">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ workspace_text.assignment_panel_title }}</h2>
+            <p class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.assignment_panel_intro }}</p>
+            <div class="mt-5 grid gap-3 sm:grid-cols-3 xl:grid-cols-3">
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ images|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.visible_images }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink" id="queued-items-count">{{ staged_entries|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.queued_items }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ games|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.configured_games }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="grid gap-4">
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="game-select">{{ workspace_text.game_label }}</label>
+                    <select id="game-select" required data-rich-search="true" data-rich-placeholder="{{ workspace_text.game_search_placeholder }}" data-rich-empty="{{ workspace_text.select_game }}">
+                        <option value="">{{ workspace_text.select_game }}</option>
+                        {% for option in destination_payload %}
+                            <option value="{{ option.key }}" data-target-game-id="{{ option.target_game_id }}" data-character-game-id="{{ option.character_game_id }}" data-use-folder-name-as-filename="{% if option.use_folder_name_as_filename %}1{% else %}0{% endif %}" data-filename-label="{{ option.filename_label|escape }}">{{ option.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="target_game" id="target-game-input" form="stage-form">
+                    <input type="hidden" name="game" id="game-input" form="stage-form">
+                </div>
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="character-dropdown-trigger">{{ workspace_text.character_label }}</label>
+                    <div class="rich-dropdown" id="character-dropdown">
+                        <button class="rich-dropdown-trigger" id="character-dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="rich-dropdown-selection">
+                                <span class="rich-dropdown-avatar hidden" id="character-selected-avatar-wrap">
+                                    <img class="rich-dropdown-avatar-image" id="character-selected-avatar" alt="Selected character preview">
+                                </span>
+                                <span class="rich-dropdown-copy">
+                                    <span class="rich-dropdown-label" id="character-selected-label">{{ workspace_text.select_game_first }}</span>
+                                    <span class="rich-dropdown-subcopy" id="character-selected-subcopy">{{ workspace_text.reference_appears_here }}</span>
+                                </span>
+                            </span>
+                            <span class="rich-dropdown-chevron" aria-hidden="true"></span>
+                        </button>
+                        <div class="rich-dropdown-menu hidden" id="character-dropdown-menu">
+                            <div class="rich-dropdown-search-row">
+                                <input class="input" id="character-search" type="search" placeholder="{{ workspace_text.character_search_placeholder }}">
+                            </div>
+                            <div class="custom-scrollbar rich-dropdown-list" id="character-option-list" role="listbox" aria-label="{{ workspace_text.characters_aria_label }}"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="character" id="character-input" form="stage-form">
+                </div>
+
+                <div class="helper-card">
+                    <div class="text-sm font-semibold text-ink">{{ workspace_text.reference_image_title }}</div>
+                    <img class="reference-frame hidden" id="reference-image" alt="Reference image preview">
+                    <div class="mt-3 text-sm leading-6 text-muted" id="reference-copy">{{ workspace_text.select_character_for_preview }}</div>
+                </div>
+
+                <button class="btn-primary w-full" id="save-to-queue-button" type="submit" form="stage-form">{{ workspace_text.save_to_queue }}</button>
+            </div>
+
+            <div class="mt-5 grid gap-3">
+                {% if staged_entries %}
+                <button class="staging-queue-summary" id="staging-queue-open" type="button">
+                    <span class="staging-queue-summary-copy">
+                        <span class="staging-queue-summary-title">{{ workspace_text.staging_queue_title }}</span>
+                        <span class="staging-queue-summary-subtitle" id="staging-queue-summary-subtitle">{{ staged_entries|length }} {% if staged_entries|length == 1 %}{{ workspace_text.queue_ready_review_singular }}{% else %}{{ workspace_text.queue_ready_review_plural }}{% endif %}</span>
+                    </span>
+                    <span class="staging-queue-summary-actions" id="staging-queue-summary-actions">
+                        <span class="staging-queue-summary-count" id="staging-queue-summary-count">{{ staged_entries|length }}</span>
+                        <span class="icon-button" aria-hidden="true">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                <circle cx="12" cy="12" r="3.2" />
+                            </svg>
+                        </span>
+                    </span>
+                </button>
+                {% else %}
+                <div class="staging-queue-summary staging-queue-summary-static" id="staging-queue-open" aria-disabled="true">
+                    <span class="staging-queue-summary-copy">
+                        <span class="staging-queue-summary-title">{{ workspace_text.staging_queue_title }}</span>
+                        <span class="staging-queue-summary-subtitle" id="staging-queue-summary-subtitle">{{ staged_entries|length }} {% if staged_entries|length == 1 %}{{ workspace_text.queue_ready_review_singular }}{% else %}{{ workspace_text.queue_ready_review_plural }}{% endif %}</span>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div class="confirm-modal-overlay hidden" id="staging-queue-modal" aria-hidden="true">
+    <div class="staging-queue-modal-card">
+        <div class="staging-queue-modal-header">
+            <div>
+                <div class="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{{ workspace_text.queued_items_title }}</div>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{{ workspace_text.staging_queue_title }}</h3>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ workspace_text.queued_items_intro }}</p>
+            </div>
+            <button class="modal-close-button" id="staging-queue-modal-close" type="button" aria-label="{{ workspace_text.close_queue_preview }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
+            </button>
+        </div>
+        <form action="{% url 'unstage_selection' %}" method="post" id="staging-queue-bulk-form">
+            {% csrf_token %}
+            <div class="staging-queue-toolbar">
+                <label class="staging-queue-select-all">
+                    <input id="staging-queue-select-all" type="checkbox">
+                    <span>{{ workspace_text.select_all }}</span>
+                </label>
+                <div class="staging-queue-toolbar-copy"><span id="staging-queue-selected-count">0</span> {{ workspace_text.queue_selected_suffix }}</div>
+                <button class="icon-button staging-queue-bulk-remove" id="staging-queue-bulk-remove" type="submit" aria-label="{{ workspace_text.remove_selected_items }}" title="{{ workspace_text.remove_selected_items }}" disabled>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4.8c0-.7.6-1.3 1.3-1.3h5.4c.7 0 1.3.6 1.3 1.3V6" />
+                        <path d="m6.5 6 .9 12.1c.1 1 .9 1.9 2 1.9h5.2c1 0 1.9-.8 2-1.9L17.5 6" />
+                        <path d="M10 10.5v5" />
+                        <path d="M14 10.5v5" />
+                    </svg>
+                </button>
+            </div>
+            <div class="staging-queue-modal-list" id="staging-queue-modal-list">
+                {% for entry in staged_entries %}
+                    <label class="staging-queue-modal-item" data-staged-item data-relative-path="{{ entry.relative_path }}">
+                        <span class="staging-queue-item-check-wrap">
+                            <input class="staging-queue-item-check" type="checkbox" name="relative_paths" value="{{ entry.relative_path }}">
+                        </span>
+                        <div class="staging-queue-modal-thumb-shell">
+                            {% if entry.preview_url %}
+                                <img class="staging-queue-modal-thumb" src="{{ entry.preview_url }}" alt="{{ entry.file_name }}" loading="lazy" decoding="async">
+                            {% else %}
+                                <div class="staging-queue-modal-thumb-empty">{{ workspace_text.no_preview }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="staging-queue-title">{{ entry.file_name }}</div>
+                            <div class="staging-queue-subtitle">{{ entry.target_label }} -&gt; {{ entry.character_name }}{% if entry.uses_folder_name_as_filename %} ({{ workspace_text.folder_name_tag }}){% endif %}</div>
+                            <div class="mt-2 break-all text-xs leading-5 text-muted">{{ entry.relative_path }}</div>
+                        </div>
+                    </label>
+                {% endfor %}
+                <div class="empty-state {% if staged_entries %}hidden{% endif %}" id="staging-queue-modal-empty">{{ workspace_text.queue_empty }}</div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ character_payload|json_script:"character-data" }}
+{{ workspace_text|json_script:"workspace-text" }}
+<script src="{% static 'fanart/js/workspace.js' %}"></script>
+{% endblock %}

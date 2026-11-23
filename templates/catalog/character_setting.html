@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.85fr)]">
+    <section class="panel panel-elevated">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ character_text.header_title }}</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ character_text.header_intro }}</p>
+        </div>
+        <div class="panel-body">
+            <form class="grid gap-5" method="post" id="character-setting-form" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="import_mode" value="{{ import_mode }}" data-import-mode-input>
+
+                {% if scan_form.non_field_errors or manual_form.non_field_errors %}
+                    <ul class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        {% for error in scan_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        {% for error in manual_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-ink" for="character-import-mode">{{ character_text.add_mode }}</label>
+                    <select class="input" id="character-import-mode" data-import-mode-select>
+                        <option value="scan" {% if import_mode != 'manual' %}selected{% endif %}>{{ character_text.scan_mode }}</option>
+                        <option value="manual" {% if import_mode == 'manual' %}selected{% endif %}>{{ character_text.manual_mode }}</option>
+                    </select>
+                    <div class="text-sm leading-6 text-muted">{{ character_text.add_mode_intro }}</div>
+                </div>
+
+                <div class="grid gap-5 {% if import_mode == 'manual' %}hidden{% endif %}" data-import-mode-panel="scan">
+                    <div class="grid gap-2">
+                        <label class="text-sm font-semibold text-ink" for="{{ scan_form.root_folder.id_for_label }}">{{ character_text.root_path_label }}</label>
+                        {{ scan_form.root_folder }}
+                        {% if scan_form.root_folder.errors %}
+                            <ul class="errorlist">
+                                {% for error in scan_form.root_folder.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="text-sm leading-6 text-muted">{{ character_text.root_path_intro }}</div>
+                    </div>
+
+                    <label class="file-checkbox-row" for="{{ scan_form.skip_existing.id_for_label }}">
+                        <span class="flex items-start gap-3">
+                            {{ scan_form.skip_existing }}
+                            <span class="grid gap-1">
+                                <span class="text-sm font-semibold text-ink">{{ character_text.skip_existing_title }}</span>
+                                <span class="text-sm leading-6 text-muted">{{ character_text.skip_existing_intro }}</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="grid gap-5 {% if import_mode != 'manual' %}hidden{% endif %}" data-import-mode-panel="manual">
+                    <div class="grid gap-2">
+                        <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_game.id_for_label }}">{{ character_text.root_game }}</label>
+                        {{ manual_form.manual_game }}
+                        {% if manual_form.manual_game.errors %}
+                            <ul class="errorlist">
+                                {% for error in manual_form.manual_game.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="text-sm leading-6 text-muted">{{ character_text.manual_intro }}</div>
+                    </div>
+
+                    <div class="grid gap-3 md:grid-cols-2">
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_name.id_for_label }}">{{ character_text.character_name }}</label>
+                            {{ manual_form.manual_name }}
+                            {% if manual_form.manual_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in manual_form.manual_name.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="grid gap-2">
+                            <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_description.id_for_label }}">{{ character_text.description }}</label>
+                            {{ manual_form.manual_description }}
+                            {% if manual_form.manual_description.errors %}
+                                <ul class="errorlist">
+                                    {% for error in manual_form.manual_description.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label class="text-sm font-semibold text-ink" for="{{ manual_form.manual_reference_image.id_for_label }}">{{ character_text.reference_image }}</label>
+                        {{ manual_form.manual_reference_image }}
+                        {% if manual_form.manual_reference_image.errors %}
+                            <ul class="errorlist">
+                                {% for error in manual_form.manual_reference_image.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="text-sm leading-6 text-muted">{{ character_text.reference_image_intro }}</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <button class="btn-secondary" type="submit" name="action" value="preview">{{ character_text.preview_button }}</button>
+                    <button class="btn-secondary" type="submit" name="action" value="clear" formnovalidate>{{ character_text.clear_button }}</button>
+                    {% if preview_payload %}
+                        <button class="btn-primary" type="submit" name="action" value="save" {% if preview_payload.rows|length == 0 %}disabled aria-disabled="true" title="{{ character_text.no_items_to_save }}"{% endif %}>{{ character_text.save_button }}</button>
+                        <input type="hidden" name="preview_import_mode" value="{{ preview_payload.import_mode|default:import_mode }}">
+                        <input type="hidden" name="preview_root_path" value="{{ preview_payload.root_path }}">
+                        <input type="hidden" name="preview_skip_existing" value="{% if preview_payload.skip_existing %}1{% else %}0{% endif %}">
+                    {% endif %}
+                </div>
+
+                {% if preview_payload %}
+                    <div class="grid gap-4 rounded-[1.75rem] border border-line/70 bg-white/35 p-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h3 class="text-lg font-semibold text-ink">{{ character_text.import_preview }}</h3>
+                                <p class="text-sm leading-6 text-muted">{{ preview_payload.root_path }}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <div class="stat-card min-w-[8rem] !px-4 !py-3">
+                                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ preview_payload.rows|length }}</div>
+                                    <div class="mt-2 text-sm leading-6 text-muted">{{ character_text.detected_rows }}</div>
+                                </div>
+                                <div class="stat-card min-w-[8rem] !px-4 !py-3">
+                                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ preview_payload.matched_game_count }}</div>
+                                    <div class="mt-2 text-sm leading-6 text-muted">{{ character_text.matched_games }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="custom-scrollbar grid max-h-[52rem] gap-3 overflow-y-auto pr-2">
+                            {% for row in preview_payload.rows %}
+                                <div class="helper-card character-import-row grid gap-4 md:grid-cols-[6.5rem_minmax(0,1fr)_auto]" data-row>
+                                    <input type="hidden" name="row_index" value="{{ forloop.counter0 }}">
+                                    <input type="hidden" name="row_active_{{ forloop.counter0 }}" value="1" data-row-active>
+                                    <input type="hidden" name="row_game_id_{{ forloop.counter0 }}" value="{{ row.game_id }}">
+                                    <input type="hidden" name="row_game_title_{{ forloop.counter0 }}" value="{{ row.game_title }}">
+                                    <input type="hidden" name="row_game_folder_{{ forloop.counter0 }}" value="{{ row.game_folder }}">
+                                    <input type="hidden" name="row_character_description_{{ forloop.counter0 }}" value="{{ row.character_description }}">
+                                    <input type="hidden" name="row_source_dir_{{ forloop.counter0 }}" value="{{ row.source_dir }}">
+                                    <input type="hidden" name="row_source_image_path_{{ forloop.counter0 }}" value="{{ row.source_image_path }}">
+
+                                    <div class="character-import-thumb-shell">
+                                        {% if row.preview_data_url %}
+                                            <img class="character-import-thumb" src="{{ row.preview_data_url }}" alt="{{ row.character_name }}">
+                                        {% else %}
+                                            <div class="character-import-thumb-empty">{{ character_text.no_reference_image }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="grid gap-2">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="rounded-full border px-3 py-1 text-xs font-semibold {% if row.status_code == 'Game not found' %}border-rose-200 bg-rose-50 text-rose-700{% elif row.status_code == 'No image' %}border-amber-200 bg-amber-50 text-amber-700{% elif row.status_code == 'Update' %}border-emerald-200 bg-emerald-50 text-emerald-700{% else %}border-sky-200 bg-sky-50 text-sky-700{% endif %}">{{ row.status_label|default:row.status }}</span>
+                                            <span class="text-sm font-semibold text-ink">{{ row.game_title }}</span>
+                                            <span class="text-sm text-muted">{{ row.game_folder }}</span>
+                                        </div>
+
+                                        <div class="grid gap-2">
+                                            <label class="text-sm font-semibold text-ink" for="row_character_name_{{ forloop.counter0 }}">{{ character_text.character_name }}</label>
+                                            <input class="input" id="row_character_name_{{ forloop.counter0 }}" type="text" name="row_character_name_{{ forloop.counter0 }}" value="{{ row.character_name }}">
+                                        </div>
+
+                                        <div class="grid gap-2">
+                                            <label class="text-sm font-semibold text-ink" for="row_character_description_{{ forloop.counter0 }}">{{ character_text.description }}</label>
+                                            <input class="input" id="row_character_description_{{ forloop.counter0 }}" type="text" name="row_character_description_{{ forloop.counter0 }}" value="{{ row.character_description }}">
+                                        </div>
+
+                                        <div class="text-sm leading-6 text-muted">
+                                            {% if row.source_dir %}<div><strong class="font-semibold text-ink">{{ character_text.folder }}:</strong> {{ row.source_dir }}</div>{% endif %}
+                                            {% if row.source_image_path %}
+                                                <div><strong class="font-semibold text-ink">{{ character_text.reference_image_label }}:</strong> {{ row.source_image_path }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start justify-end">
+                                        <button class="character-preview-remove-btn" type="button" data-remove-row aria-label="{{ character_text.remove_preview_row }}">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M9.5 9.5l5 5"></path>
+                                                <path d="M14.5 9.5l-5 5"></path>
+                                                <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </section>
+
+    <aside class="grid gap-6">
+        <section class="panel panel-elevated">
+            <div class="panel-header">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <div class="section-kicker">{{ character_text.library }}</div>
+                        <h2 class="mt-1 text-2xl font-semibold tracking-tight text-ink">{{ character_text.saved_characters }}</h2>
+                    </div>
+                    <div class="game-list-summary">
+                        <div>
+                            <span class="text-2xl font-semibold tracking-tight text-ink">{{ saved_character_game_count }}</span>
+                            <span class="text-sm text-muted">{{ character_text.games_short }}</span>
+                        </div>
+                        <div>
+                            <span class="text-2xl font-semibold tracking-tight text-ink">{{ saved_character_total }}</span>
+                            <span class="text-sm text-muted">{{ character_text.characters_short }}</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-muted">{{ character_text.saved_system_intro }}</p>
+            </div>
+            <div class="panel-body grid gap-3">
+                {% if saved_character_groups %}
+                    <div class="custom-scrollbar grid max-h-[36rem] gap-3 overflow-y-auto pr-2">
+                        {% for group in saved_character_groups %}
+                            <section class="saved-character-group-card">
+                                <div class="saved-character-group-bar">
+                                    <div class="saved-character-group-copy">
+                                        <div class="saved-character-group-dot"></div>
+                                        <div class="min-w-0">
+                                            <div class="truncate text-sm font-semibold text-ink">{{ group.game.display_path }}</div>
+                                            <div class="text-xs leading-5 text-muted">{{ group.count }} {{ character_text.characters_word }}</div>
+                                        </div>
+                                    </div>
+                                    <button class="saved-character-group-view-btn" type="button" data-character-group-view data-group-id="{{ group.game.id }}" data-group-label="{{ group.game.display_path|escape }}" data-group-count="{{ group.count }}" data-template-id="saved-character-group-template-{{ group.game.id }}" aria-label="{{ character_text.saved_characters }}">
+                                        <svg class="saved-character-group-view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </section>
+                            <template id="saved-character-group-template-{{ group.game.id }}">
+                                <div class="saved-character-list-modal-grid">
+                                    {% for character in group.characters %}
+                                        <div class="saved-character-row">
+                                            <div class="character-tree-entry">
+                                                {% if character.reference_image %}
+                                                    <img class="character-tree-thumb" src="{{ character.reference_image.url }}" alt="{{ character.name }}">
+                                                {% else %}
+                                                    <div class="character-tree-thumb character-tree-thumb-empty">N/A</div>
+                                                {% endif %}
+                                                <div class="min-w-0">
+                                                    <div class="truncate text-sm font-semibold text-ink">{{ character.name }}</div>
+                                                    <div class="text-xs leading-5 text-muted">{% if character.description %}{{ character.description }}{% else %}{{ character.game.title }}{% endif %}</div>
+                                                </div>
+                                            </div>
+                                            <div class="saved-game-tree-actions">
+                                                <button class="tree-action-btn" type="button" data-character-edit-trigger data-character-id="{{ character.id }}" data-character-label="{{ group.game.display_path|escape }} / {{ character.name|escape }}" data-character-name="{{ character.name|escape }}" data-character-description="{{ character.description|escape }}" data-character-image-url="{% if character.reference_image %}{{ character.reference_image.url }}{% endif %}">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M12 20h9"></path>
+                                                        <path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button class="tree-action-btn tree-action-btn-danger" type="button" data-character-delete-trigger data-character-id="{{ character.id }}" data-character-label="{{ group.game.display_path|escape }} / {{ character.name|escape }}">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M8 6V4h8v2"></path>
+                                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                                        <path d="M10 11v6"></path>
+                                                        <path d="M14 11v6"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </template>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">{{ character_text.saved_characters_empty }}</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ character_text.workflow_title }}</h2>
+                <p class="mt-2 text-sm leading-6 text-muted">{{ character_text.workflow_intro }}</p>
+            </div>
+            <div class="panel-body">
+                <div class="helper-card space-y-4 text-sm leading-6 text-muted">
+                    {% for step in character_text.workflow_steps %}
+                        <p><strong class="font-semibold text-ink">{{ forloop.counter }}.</strong> {{ step }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<form method="post" class="hidden" data-character-delete-form>
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete_saved">
+    <input type="hidden" name="character_id" value="" data-character-delete-id>
+</form>
+
+<div class="character-list-modal-overlay hidden" data-character-list-modal>
+    <div class="confirm-modal-card saved-character-modal-card">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <div class="section-kicker">{{ character_text.library }}</div>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink" data-character-list-modal-title>{{ character_text.saved_characters }}</h3>
+                <p class="mt-2 text-sm leading-6 text-muted" data-character-list-modal-subtitle></p>
+            </div>
+            <button class="modal-close-button" type="button" data-character-list-modal-close aria-label="{{ character_text.close_character_modal }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="saved-character-list-modal custom-scrollbar" data-character-list-modal-body></div>
+    </div>
+</div>
+
+<div class="confirm-modal-overlay hidden" data-character-confirm-modal>
+    <div class="confirm-modal-card saved-character-child-card">
+        <div class="section-kicker">{{ character_text.confirm }}</div>
+        <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{{ character_text.delete_character }}</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">{{ character_text.delete_character_intro }}</p>
+        <div class="confirm-modal-target" data-character-confirm-target></div>
+        <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button class="btn-secondary" type="button" data-character-confirm-cancel>{{ character_text.cancel }}</button>
+            <button class="saved-game-delete-btn" type="button" data-character-confirm-submit>{{ character_text.delete_character_button }}</button>
+        </div>
+    </div>
+</div>
+
+<div class="confirm-modal-overlay hidden" data-character-edit-modal>
+    <form class="confirm-modal-card saved-character-child-card grid gap-4" method="post" enctype="multipart/form-data" data-character-edit-form>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_saved">
+        <input type="hidden" name="character_id" data-character-edit-id>
+        <div class="section-kicker">{{ character_text.edit }}</div>
+        <h3 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{{ character_text.edit_character_name }}</h3>
+        <p class="mt-3 text-sm leading-6 text-muted" data-character-edit-target></p>
+        <div class="character-edit-preview-shell">
+            <img class="character-edit-preview-image hidden" src="" alt="" data-character-edit-image>
+            <div class="character-edit-preview-empty" data-character-edit-empty>{{ character_text.no_reference_image }}</div>
+        </div>
+        <div class="grid gap-2">
+            <label class="text-sm font-semibold text-ink" for="edit-character-name">{{ character_text.character_name }}</label>
+            <input class="input" id="edit-character-name" name="saved_character_name" type="text" data-character-edit-name>
+        </div>
+        <div class="grid gap-2">
+            <label class="text-sm font-semibold text-ink" for="edit-character-description">{{ character_text.description }}</label>
+            <input class="input" id="edit-character-description" name="saved_character_description" type="text" data-character-edit-description>
+        </div>
+        <div class="grid gap-2">
+            <label class="text-sm font-semibold text-ink" for="edit-reference-image">{{ character_text.upload_new_image }}</label>
+            <input class="input file:mr-4 file:rounded-full file:border-0 file:bg-white/80 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-ink" id="edit-reference-image" name="saved_reference_image" type="file" accept="image/*" data-character-edit-file>
+            <div class="text-sm leading-6 text-muted">{{ character_text.upload_new_image_intro }}</div>
+        </div>
+        <div class="mt-2 flex flex-wrap justify-end gap-3">
+            <button class="btn-secondary" type="button" data-character-edit-cancel>{{ character_text.cancel }}</button>
+            <button class="btn-primary" type="submit">{{ character_text.save_changes }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script id="character-setting-js-config" type="application/json">{"currentGroupId":{% if open_saved_group_id %}{{ open_saved_group_id }}{% else %}null{% endif %},"savedCharactersTitle":"{{ character_text.saved_characters|escapejs }}","charactersSuffix":"{{ character_text.characters_word|escapejs }}"}</script>
+<script src="{% static 'catalog/js/character_setting.js' %}"></script>
+{% endblock %}

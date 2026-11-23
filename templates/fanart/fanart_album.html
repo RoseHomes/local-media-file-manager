@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block page_kicker %}{{ page_kicker }}{% endblock %}
+
+{% block page_heading %}{{ page_heading }}{% endblock %}
+
+{% block page_intro %}
+<p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+    {{ page_intro_text }}
+</p>
+{% endblock %}
+
+{% block hero_actions %}
+{% if current_root %}
+    <div class="hero-root-card w-full sm:max-w-[30rem] lg:my-auto lg:w-[30rem] lg:max-w-[30rem]">
+        <div class="hero-root-header">
+            <div class="text-xs font-semibold uppercase tracking-[0.24em] text-warm/70">{{ fanart_album_text.album_root }}</div>
+        </div>
+        <form method="get" class="mt-3 grid gap-3">
+            <select class="hero-root-select" name="library" onchange="this.form.submit()">
+                {% for option in root_options %}
+                    <option value="{{ option.index }}" {% if option.is_active %}selected{% endif %}>{{ option.label }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <div class="hero-root-path">{{ current_root }}</div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(22rem,0.9fr)]">
+    <section class="panel panel-elevated flex min-h-[calc(100vh-7rem)] flex-col">
+        <div class="panel-header">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_album_text.viewer_title }}</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ fanart_album_text.viewer_intro }}</p>
+                </div>
+                <div class="metric-pill">
+                    <div class="text-3xl font-semibold leading-none text-ink">{{ images|length }}</div>
+                    <div class="mt-2 text-xs uppercase tracking-[0.24em] text-muted">{{ fanart_album_text.visible_images }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body flex-1">
+            {% if album_paths %}
+                {% if album_error %}
+                    <div class="empty-state">{{ album_error }}</div>
+                {% else %}
+                    <div class="toolbar-shell mb-4 grid gap-3 lg:flex lg:flex-nowrap lg:items-center">
+                        <input class="input min-w-[18rem] flex-[1.2]" id="album-gallery-filter" type="search" placeholder="{{ fanart_album_text.filter_placeholder }}">
+                        {% if album_character_filter.is_visible %}
+                            <select class="w-auto min-w-[13rem] shrink-0 lg:basis-[14rem]" id="album-character-filter" data-rich-search="true" data-rich-clearable="true" data-rich-clear-label="{{ fanart_album_text.clear_character_filter }}" data-rich-placeholder="{{ fanart_album_text.character_filter_placeholder }}" data-rich-empty="{{ fanart_album_text.character_filter_empty }}" aria-label="{{ fanart_album_text.character_filter_aria_label }}">
+                                <option value="">{{ fanart_album_text.character_filter_all }}</option>
+                                {% for character_name in album_character_filter.characters %}
+                                    <option value="{{ character_name|lower }}">{{ character_name }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                        <select class="input w-auto min-w-[13rem] shrink-0" id="album-sort-select" aria-label="{{ fanart_album_text.sort_aria_label }}">
+                            <option value="date_desc" {% if default_sort == "date_desc" %}selected{% endif %}>{{ fanart_album_text.sort_date_desc }}</option>
+                            <option value="date_asc" {% if default_sort == "date_asc" %}selected{% endif %}>{{ fanart_album_text.sort_date_asc }}</option>
+                            <option value="name_asc" {% if default_sort == "name_asc" %}selected{% endif %}>{{ fanart_album_text.sort_name_asc }}</option>
+                            <option value="name_desc" {% if default_sort == "name_desc" %}selected{% endif %}>{{ fanart_album_text.sort_name_desc }}</option>
+                        </select>
+                        <div class="text-sm text-muted lg:ml-auto lg:shrink-0"><span class="font-semibold text-ink">{{ current_folder_name }}</span></div>
+                    </div>
+
+                    {% if breadcrumbs %}
+                        <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
+                            {% for crumb in breadcrumbs %}
+                                <a class="path-chip" href="{{ crumb.url }}">{{ crumb.label }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if images %}
+                        <div class="custom-scrollbar flex-1 overflow-y-auto pr-2 max-h-[calc(100vh-11rem)]">
+                            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="album-gallery">
+                                {% for image in images %}
+                                    <button class="group gallery-card album-card-link w-full text-left" type="button" data-file-url="{{ image.file_url }}" data-preview-url="{{ image.preview_url }}" data-file-name="{{ image.file_name|lower }}" data-file-title="{{ image.file_name }}" data-file-path="{{ image.full_path }}" data-file-size="{{ image.file_size_label }}" data-file-created="{{ image.created_at|date:'d/m/Y H:i' }}" data-file-modified="{{ image.modified_at|date:'d/m/Y H:i' }}" data-created="{{ image.created_at|date:'U' }}" data-character-name="{{ image.character_name|lower }}">
+                                        <div class="gallery-media">
+                                            <img class="gallery-image" src="{{ image.preview_url }}" alt="{{ image.file_name }}" loading="lazy" decoding="async" fetchpriority="low" draggable="false">
+                                        </div>
+                                        <div class="space-y-0.5 px-3 py-2.5">
+                                            <div class="line-clamp-2 break-all text-sm font-semibold text-ink">{{ image.file_name }}</div>
+                                            <div class="text-xs uppercase tracking-[0.2em] text-muted">{{ image.created_at|date:"d/m/Y H:i" }}</div>
+                                        </div>
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">{{ fanart_album_text.empty_folder }}</div>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    {{ fanart_album_text.no_album_paths_prefix }}
+                    <a class="font-semibold text-warm underline-offset-4 hover:underline" href="{% url 'album_setting' %}">{{ fanart_album_text.no_album_paths_link }}</a>
+                    {{ fanart_album_text.no_album_paths_suffix }}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <aside class="panel panel-elevated xl:sticky xl:top-5 xl:self-start">
+        <div class="panel-header">
+            <h2 class="text-2xl font-semibold tracking-tight text-ink">{{ fanart_album_text.folder_panel_title }}</h2>
+            <p class="mt-2 text-sm leading-6 text-muted">{{ fanart_album_text.folder_panel_intro }}</p>
+            <div class="mt-5 grid gap-3 sm:grid-cols-3 xl:grid-cols-3">
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ album_paths|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ fanart_album_text.configured_roots }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ subfolders|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ fanart_album_text.subfolders_here }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-semibold tracking-tight text-ink">{{ images|length }}</div>
+                    <div class="mt-2 text-sm leading-6 text-muted">{{ fanart_album_text.images_here }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body grid gap-5">
+            <section class="helper-card grid gap-3">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <div class="text-sm font-semibold text-ink">{{ fanart_album_text.subfolders_title }}</div>
+                        <div class="mt-1 text-sm text-muted">{{ fanart_album_text.subfolders_intro }}</div>
+                    </div>
+                    {% if parent_url %}
+                        <a class="btn-secondary !px-4 !py-2.5" href="{{ parent_url }}">{{ fanart_album_text.back }}</a>
+                    {% endif %}
+                </div>
+                {% if subfolders %}
+                    <div class="grid gap-3">
+                        {% for folder in subfolders %}
+                            <a class="folder-link-card" href="{{ folder.url }}">
+                                <div>
+                                    <div class="text-sm font-semibold text-ink">{{ folder.name }}</div>
+                                    <div class="mt-1 text-xs uppercase tracking-[0.18em] text-muted">{{ folder.relative_path }}</div>
+                                </div>
+                                <div class="text-right text-xs text-muted">{{ folder.folder_count }} {{ fanart_album_text.folders_word }} / {{ folder.image_count }} {{ fanart_album_text.images_word }}</div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state !px-4 !py-6 text-sm">{{ fanart_album_text.no_subfolders }}</div>
+                {% endif %}
+            </section>
+        </div>
+    </aside>
+</div>
+
+<div class="album-preview-overlay hidden" id="album-preview-overlay" aria-hidden="true">
+    <button class="album-preview-nav album-preview-nav-left" id="album-preview-prev" type="button" aria-label="{{ fanart_album_text.prev_image }}">
+        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <div class="album-preview-shell">
+        <button class="album-preview-meta-toggle" id="album-preview-meta-toggle" type="button" aria-label="{{ fanart_album_text.toggle_metadata }}">?</button>
+        <div class="album-meta-popover hidden" id="album-meta-popover">
+            <div class="album-meta-popover-grid">
+                <div>
+                    <div class="album-preview-meta-label">{{ fanart_album_text.file_name }}</div>
+                    <div class="album-preview-meta-value" id="album-meta-name"></div>
+                </div>
+                <div>
+                    <div class="album-preview-meta-label">{{ fanart_album_text.file_size }}</div>
+                    <div class="album-preview-meta-value" id="album-meta-size"></div>
+                </div>
+                <div>
+                    <div class="album-preview-meta-label">{{ fanart_album_text.created }}</div>
+                    <div class="album-preview-meta-value" id="album-meta-created"></div>
+                </div>
+                <div>
+                    <div class="album-preview-meta-label">{{ fanart_album_text.modified }}</div>
+                    <div class="album-preview-meta-value" id="album-meta-modified"></div>
+                </div>
+                <div class="sm:col-span-2">
+                    <div class="album-preview-meta-label">{{ fanart_album_text.path }}</div>
+                    <div class="album-preview-meta-value break-all" id="album-meta-path"></div>
+                </div>
+            </div>
+        </div>
+        <div class="album-preview-stage">
+            <img class="album-preview-image" id="album-preview-image" alt="{{ fanart_album_text.messages.preview_fallback }}">
+        </div>
+        <div class="album-preview-meta">
+            <div>
+                <div class="text-lg font-semibold text-ink" id="album-preview-title"></div>
+                <div class="mt-1 text-sm text-muted" id="album-preview-date"></div>
+            </div>
+            <button class="btn-secondary" id="album-preview-copy" type="button">{{ fanart_album_text.copy_file_path }}</button>
+        </div>
+    </div>
+    <button class="album-preview-nav album-preview-nav-right" id="album-preview-next" type="button" aria-label="{{ fanart_album_text.next_image }}">
+        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 18 6-6-6-6" />
+        </svg>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script id="fanart-album-js-config" type="application/json">{"copyDefaultText":"{{ fanart_album_text.messages.copy_default|escapejs }}","copyDoneText":"{{ fanart_album_text.messages.copy_done|escapejs }}","copyFailedText":"{{ fanart_album_text.messages.copy_failed|escapejs }}","previewFallbackTitle":"{{ fanart_album_text.messages.preview_fallback|escapejs }}"}</script>
+<script src="{% static 'fanart/js/fanart_album.js' %}"></script>
+{% endblock %}

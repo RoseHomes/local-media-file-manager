@@ -1,0 +1,69 @@
+{
+  "pages": {
+    "filemanage:rename-files": {
+      "kicker": "FileManage Workflow",
+      "title": "Rename Files",
+      "intro": "Preview rename results across the workspace before running text transforms, delimiter trims, or numbering rules."
+    },
+    "filemanage:change-file-extension": {
+      "kicker": "FileManage Workflow",
+      "title": "Change File Extension",
+      "intro": "Convert supported images to another extension using the configured old and new suffix rules."
+    },
+    "filemanage:extract-zip": {
+      "kicker": "FileManage Workflow",
+      "title": "Extract ZIP",
+      "intro": "Find ZIP archives in the workspace and unpack each one into a folder beside the archive."
+    },
+    "filemanage:images-to-pdf": {
+      "kicker": "FileManage Workflow",
+      "title": "Images To PDF",
+      "intro": "Use the folder-based image to PDF workflow, with image fitting and cleanup options from settings."
+    },
+    "filemanage:pdf-to-images": {
+      "kicker": "FileManage Workflow",
+      "title": "PDF To Images",
+      "intro": "Export PDF pages into image folders from the current FileManage workspace."
+    },
+    "filemanage:webp-to-mp4": {
+      "kicker": "FileManage Workflow",
+      "title": "WebP To MP4",
+      "intro": "Convert static and animated WebP files into MP4 while mirroring the workspace folder structure into the output root."
+    },
+    "filemanage_setting:workspace": {
+      "kicker": "FileManage Workflow",
+      "title": "Workspace Settings",
+      "intro": "Set the root folder that every FileManage tool will scan and update."
+    },
+    "filemanage_setting:rename": {
+      "kicker": "FileManage Workflow",
+      "title": "Rename Settings",
+      "intro": "Configure the Rename Files tool to transform text, trim names by delimiter, or apply numbering rules across matching filenames."
+    },
+    "filemanage_setting:extension": {
+      "kicker": "FileManage Workflow",
+      "title": "Extension Settings",
+      "intro": "Choose which image suffix to convert from and what new extension should be written."
+    },
+    "filemanage_setting:zip": {
+      "kicker": "FileManage Workflow",
+      "title": "ZIP Settings",
+      "intro": "Control recursive ZIP extraction and whether the original archives should be deleted after success."
+    },
+    "filemanage_setting:images-to-pdf": {
+      "kicker": "FileManage Workflow",
+      "title": "Images To PDF Settings",
+      "intro": "Configure the folder-based image-to-PDF workflow imported from the example scripts."
+    },
+    "filemanage_setting:pdf-to-images": {
+      "kicker": "FileManage Workflow",
+      "title": "PDF To Images Settings",
+      "intro": "Choose how PDFs are exported back into image pages and whether source PDFs are kept."
+    },
+    "filemanage_setting:webp-to-mp4": {
+      "kicker": "FileManage Workflow",
+      "title": "WebP To MP4 Settings",
+      "intro": "Choose where converted MP4 files should be written and how ffmpeg should encode each WebP file."
+    }
+  }
+}

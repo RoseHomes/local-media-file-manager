@@ -1,0 +1,43 @@
+{
+  "page_ui": {
+    "filemanage_setting_page": {
+      "saved_values_intro": "ค่าที่บันทึกในหน้านี้จะถูกโหลดไปใช้โดยอัตโนมัติในเมนู FileManage ที่ตรงกัน",
+      "save_settings": "บันทึกการตั้งค่า",
+      "reset": "รีเซ็ต",
+      "workspace_snapshot_title": "ภาพรวม workspace",
+      "workspace_snapshot_intro": "สรุปสั้น ๆ ของ root ปัจจุบันใน FileManage",
+      "root": "ราก",
+      "folders": "โฟลเดอร์",
+      "files": "ไฟล์",
+      "images": "รูปภาพ",
+      "current_values_title": "ค่าปัจจุบัน",
+      "current_values_intro": "ภาพรวมของค่าที่บันทึกไว้อยู่ตอนนี้",
+      "rename_helper_intro": "เลือก workflow ก่อน ฟอร์มจะคงฟิลด์ที่ใช้ร่วมกันไว้ และแสดงเฉพาะฟิลด์ที่ workflow นั้นต้องใช้",
+      "rename_cards": [
+        {
+          "title": "Text Transform",
+          "body": "แทนข้อความ เติมคำนำหน้า เติมคำต่อท้าย ลบข้อความที่ตรงกัน หรือใช้โหมดแทนค่าตามลำดับตัวอักษรของแต่ละโฟลเดอร์"
+        },
+        {
+          "title": "Trim by Delimiter",
+          "body": "ตัดชื่อไฟล์ตามจุดคั่นอย่าง _, -, (, หรือ [ แล้วเก็บเฉพาะส่วนที่ต้องการ"
+        },
+        {
+          "title": "Numbering",
+          "body": "สลับบล็อกตัวเลขเดิม หรือเติมเลขลำดับด้านหน้าหรือด้านท้ายตามลำดับที่เรียงไว้"
+        }
+      ],
+      "enabled": "เปิดใช้",
+      "disabled": "ปิดใช้",
+      "empty": "-"
+    },
+    "filemanage_messages": {
+      "setting_saved": "อัปเดต {label} แล้ว",
+      "dependency_missing_pdf_to_images": "การทำงานนี้ต้องใช้ dependency เพิ่มก่อนรัน ติดตั้ง pypdfium2 สำหรับ PDF To Images ก่อน",
+      "dependency_missing_webp_to_mp4": "การทำงานนี้ต้องใช้ dependency เพิ่มก่อนรัน ติดตั้ง FFmpeg สำหรับ WebP To MP4 ก่อน",
+      "dependency_missing_generic": "การทำงานนี้ต้องใช้ dependency เพิ่มก่อนรัน",
+      "no_matching_items": "ไม่พบรายการที่ตรงกับการทำงานนี้",
+      "operation_completed": "{label} เสร็จสิ้นสำหรับ {count} รายการ"
+    }
+  }
+}

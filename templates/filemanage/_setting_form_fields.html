@@ -1,0 +1,190 @@
+{% if form.non_field_errors %}
+    <ul class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% for field in form %}
+    {% if setting_page.slug == 'rename' %}
+        {% if field.name == 'text_action' or field.name == 'search_text' or field.name == 'replace_text' or field.name == 'added_text' or field.name == 'match_scope' or field.name == 'match_occurrence' or field.name == 'per_folder_alpha_mode' or field.name == 'start_letter' %}
+            {% with workflow_scope='text_transform' %}
+                {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}"{% if field.name == 'search_text' or field.name == 'match_scope' or field.name == 'match_occurrence' %} data-rename-actions="replace,remove"{% elif field.name == 'replace_text' %} data-rename-actions="replace"{% elif field.name == 'per_folder_alpha_mode' or field.name == 'start_letter' %} data-rename-actions="replace,add_prefix,add_suffix"{% elif field.name == 'added_text' %} data-rename-actions="add_prefix,add_suffix"{% else %} data-rename-actions="all"{% endif %}>
+                        <label class="file-checkbox-row" for="{{ field.id_for_label }}">
+                            <span class="flex items-start gap-3">
+                                {{ field }}
+                                <span class="grid gap-1">
+                                    <span class="text-sm font-semibold text-ink">{{ field.label }}</span>
+                                </span>
+                            </span>
+                        </label>
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}"{% if field.name == 'search_text' or field.name == 'match_scope' or field.name == 'match_occurrence' %} data-rename-actions="replace,remove"{% elif field.name == 'replace_text' %} data-rename-actions="replace"{% elif field.name == 'per_folder_alpha_mode' or field.name == 'start_letter' %} data-rename-actions="replace,add_prefix,add_suffix"{% elif field.name == 'added_text' %} data-rename-actions="add_prefix,add_suffix"{% else %} data-rename-actions="all"{% endif %}>
+                        <label class="text-sm font-semibold text-ink" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% elif field.name == 'trim_delimiter' or field.name == 'trim_action' or field.name == 'delimiter_occurrence' or field.name == 'include_delimiter' %}
+            {% with workflow_scope='trim_delimiter' %}
+                {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}">
+                        <label class="file-checkbox-row" for="{{ field.id_for_label }}">
+                            <span class="flex items-start gap-3">
+                                {{ field }}
+                                <span class="grid gap-1">
+                                    <span class="text-sm font-semibold text-ink">{{ field.label }}</span>
+                                </span>
+                            </span>
+                        </label>
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}">
+                        <label class="text-sm font-semibold text-ink" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% elif field.name == 'number_action' or field.name == 'start_number' or field.name == 'increment' or field.name == 'number_width' or field.name == 'number_separator' or field.name == 'reset_per_folder' %}
+            {% with workflow_scope='numbering' %}
+                {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}">
+                        <label class="file-checkbox-row" for="{{ field.id_for_label }}">
+                            <span class="flex items-start gap-3">
+                                {{ field }}
+                                <span class="grid gap-1">
+                                    <span class="text-sm font-semibold text-ink">{{ field.label }}</span>
+                                </span>
+                            </span>
+                        </label>
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="{{ workflow_scope }}">
+                        <label class="text-sm font-semibold text-ink" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% else %}
+            {% if field.field.widget.input_type == 'checkbox' %}
+                <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="shared">
+                    <label class="file-checkbox-row" for="{{ field.id_for_label }}">
+                        <span class="flex items-start gap-3">
+                            {{ field }}
+                            <span class="grid gap-1">
+                                <span class="text-sm font-semibold text-ink">{{ field.label }}</span>
+                            </span>
+                        </span>
+                    </label>
+                    {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="filemanage-form-field" data-rename-field="{{ field.name }}" data-rename-scope="shared">
+                    <label class="text-sm font-semibold text-ink" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="filemanage-form-field">
+                <label class="file-checkbox-row" for="{{ field.id_for_label }}">
+                    <span class="flex items-start gap-3">
+                        {{ field }}
+                        <span class="grid gap-1">
+                            <span class="text-sm font-semibold text-ink">{{ field.label }}</span>
+                        </span>
+                    </span>
+                </label>
+                {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="filemanage-form-field">
+                <label class="text-sm font-semibold text-ink" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if field.help_text %}<div class="filemanage-form-help">{{ field.help_text }}</div>{% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+

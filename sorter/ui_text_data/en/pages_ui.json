@@ -1,0 +1,9 @@
+{
+  "pages": {
+    "interface_text_setting": {
+      "kicker": "Interface Settings",
+      "title": "Interface Text Setting",
+      "intro": "Switch menu labels, page titles, and page descriptions between English, Thai, or English titles with Thai descriptions."
+    }
+  }
+}

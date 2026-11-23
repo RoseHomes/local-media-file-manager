@@ -1,0 +1,47 @@
+{
+  "page_ui": {
+    "ui_interface_text_setting": {
+      "section_title": "Language And Theme",
+      "section_intro": "Choose how text and colors should appear across the app.",
+      "display_mode": "Display mode",
+      "theme_label": "Interface theme",
+      "save_settings": "Save Settings",
+      "reset_settings": "Reset",
+      "current_setup_title": "Current Setup",
+      "current_setup_intro": "The whole interface updates from these settings.",
+      "active_display_mode": "Active display mode",
+      "active_theme": "Active theme",
+      "display_modes_title": "Display Modes",
+      "display_modes_intro": "Quick reference for each language display mode.",
+      "display_modes": [
+        {"title": "English", "body": "Keeps menu names, page titles, and descriptions fully in English."},
+        {"title": "Thai", "body": "Switches menu names, page titles, and descriptions to Thai."},
+        {"title": "Mixed", "body": "Keeps English titles while showing Thai descriptions."}
+      ],
+      "themes_title": "Themes",
+      "themes_intro": "Quick reference for the available color directions.",
+      "themes": [
+        {"title": "Cocoa Brown", "body": "Rich cocoa neutrals with vanilla-cream panels and warm contrast."},
+        {"title": "Mystic Violet", "body": "A dreamy violet palette with cooler glass panels."},
+        {"title": "Cotton Candy Cloud", "body": "A light pink-and-blue palette with a softer candy atmosphere."},
+        {"title": "Lunar Cloud", "body": "Pure white cards on a soft gray canvas with charcoal navigation."}
+      ],
+      "messages": {
+        "saved": "Interface text settings updated successfully."
+      },
+      "error_messages": {
+        "invalid_menu_config": "The menu ordering data is invalid. Please refresh the page and try again.",
+        "missing_menu_group": "The menu ordering is incomplete. Please refresh the page and try again.",
+        "duplicate_menu_group": "The menu ordering contains a duplicated menu group.",
+        "invalid_menu_items": "The menu ordering contains unexpected menu items.",
+        "duplicate_menu_item": "The menu ordering contains a duplicated menu item."
+      },
+      "menu_order_title": "Menu Ordering",
+      "menu_order_intro": "Drag and drop to reorder menu blocks and items. Sub-menus cannot be moved between blocks.",
+      "menu_order_open": "Open Menu Ordering",
+      "close_menu_order": "Done",
+      "close_menu_order_modal": "Close menu ordering modal",
+      "menu_order_save": "Save Menu Order"
+    }
+  }
+}
