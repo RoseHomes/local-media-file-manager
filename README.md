@@ -11,6 +11,16 @@ A local Django app for organizing media and running batch file operations on Win
 
 ## Quick start on Windows
 
+To start the synthetic demo from Command Prompt or PowerShell with Python 3.13 installed, run this command from the project folder.
+
+```text
+py -3.13 local_media_file_manager.py
+```
+
+Open [the demo](http://127.0.0.1:8001/) and press **Ctrl+C** in the same terminal to stop it. The launcher installs the pinned packages on first run and stores the demo under `%LOCALAPPDATA%/LocalMediaFileManager`.
+
+### Manual setup
+
 Open PowerShell in the project folder with Python 3.13 and the Windows Python Launcher installed. The setup script creates a virtual environment and installs the pinned Python packages.
 
 ```powershell
